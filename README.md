@@ -1,50 +1,120 @@
-# Welcome to your Expo app 👋
+# OMO
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> 외출 전 코디 고민을 덜어주는
+> AI 기반 OOTD 추천 서비스
 
-## Get started
+<br />
 
-1. Install dependencies
+## 서비스 소개
 
-   ```bash
-   npm install
-   ```
+**OMO**는 사용자의 상황과 선호 스타일을 바탕으로
+상황에 어울리는 코디를 추천하고, 상세 제품 정보까지 제공하는
+개인 맞춤형 스타일링 앱 서비스입니다.
 
-2. Start the app
+매일 옷 고르기가 어렵거나, 자신에게 어울리는 스타일을 찾고 싶은 사용자가
+더 쉽고 빠르게 외출 준비를 할 수 있도록 돕습니다.
 
-   ```bash
-   npx expo start
-   ```
+<br />
 
-In the output, you'll find options to open the app in a
+## 서비스 목표
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+* 외출 전 코디 고민 감소
+* 상황에 맞는 개인 맞춤 스타일 추천
+* 사용자의 취향과 스타일 데이터를 기반으로 한 OOTD 제안
+* 다양한 코디 게시글을 통한 스타일 탐색 경험 제공
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+<br />
 
-## Get a fresh project
+## 타겟 사용자
 
-When you're ready, run:
+* 매일 옷 고르기가 어려운 사람
+* 자신에게 어울리는 스타일을 찾고 싶은 사람
+* 상황별 코디 추천이 필요한 사람
+* 다른 사람의 OOTD를 참고하고 싶은 사람
 
-```bash
-npm run reset-project
+<br />
+
+## 주요 기능
+
+### AI 챗봇
+
+사용자가 자연어로 입력한 상황과 취향을 분석하여
+상황에 맞는 코디를 추천합니다.
+
+예시:
+
+* “오늘 친구랑 카페 가는데 편한 코디 추천해줘”
+* “데이트룩인데 너무 꾸민 느낌은 싫어”
+* “비 오는 날 입기 좋은 코디 알려줘”
+
+<br />
+
+### 피드
+
+팔로잉 피드와 트렌드 피드를 통해
+다양한 사용자의 코디 게시글을 확인할 수 있습니다.
+
+* 팔로잉한 사용자의 OOTD 확인
+* 인기 있는 트렌드 코디 탐색
+* 마음에 드는 코디 저장
+
+<br />
+
+### 업로드
+
+사용자가 직접 코디 이미지와 설명을 등록하여
+자신의 OOTD 게시글을 작성할 수 있습니다.
+
+* 코디 이미지 업로드
+* 코디 설명 작성
+* 스타일 공유
+
+<br />
+
+### 마이페이지
+
+사용자의 활동 정보를 한눈에 확인할 수 있습니다.
+
+* 팔로워 목록
+* 팔로잉 목록
+* 내가 작성한 게시글
+* 저장한 코디
+
+<br />
+
+## 화면 구성
+
+| 화면    | 설명                        |
+| ----- | ------------------------- |
+| 홈     | 서비스 주요 화면 및 추천 코디 확인      |
+| AI 챗봇 | 상황과 취향 기반 코디 추천           |
+| 피드    | 팔로잉 / 트렌드 코디 게시글 확인       |
+| 업로드   | 코디 이미지 및 설명 등록            |
+| 마이페이지 | 내 게시글, 저장한 코디, 팔로워·팔로잉 확인 |
+
+<br />
+
+## 핵심 사용자 흐름
+
+```text
+사용자 상황 입력
+        ↓
+AI 챗봇이 상황과 취향 분석
+        ↓
+맞춤형 OOTD 추천
+        ↓
+상세 코디 및 제품 정보 확인
+        ↓
+마음에 드는 코디 저장 또는 피드 탐색
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+<br />
 
-## Learn more
+## 기대 효과
 
-To learn more about developing your project with Expo, look at the following resources:
+* 사용자의 외출 준비 시간 단축
+* 개인 취향에 맞는 스타일 추천 경험 제공
+* OOTD 공유를 통한 스타일 커뮤니티 형성
+* AI 기반 추천으로 코디 선택 부담 감소
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
