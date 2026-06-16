@@ -1,7 +1,7 @@
-import type { ImageSourcePropType } from 'react-native';
+import type { ImageSourcePropType } from "react-native";
 
-import type { ProductRecommendation } from '@/features/feed/types';
-import type { StyleOption } from '@/features/onboarding/styles';
+import type { ProductRecommendation } from "@/features/feed/types";
+import type { StyleOption } from "@/features/onboarding/styles";
 
 export type AiCoordiSummary = {
   id: string;
@@ -29,6 +29,8 @@ export type AiCoordiDetail = {
   hashtags: string[];
   totalBudgetWon: number;
   likes: number;
+  liked?: boolean;
+  bookmarked?: boolean;
   author: AiCoordiAuthor;
   items: AiCoordiItem[];
 };

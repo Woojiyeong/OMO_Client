@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 
-import { MOCK_FOLLOWERS, MOCK_FOLLOWING } from '@/features/social/mock';
 import { STYLE_OPTIONS, type StyleOption } from '@/features/onboarding/styles';
 
 export type ProfileStats = {
@@ -25,15 +24,15 @@ type ProfileState = ProfileData & {
 };
 
 const INITIAL: ProfileData = {
-  name: '우지영',
-  keyword: 'formal',
-  heightCm: 180,
-  weightKg: 70,
-  bio: '회사에선 개발자 오프에선 패션짱',
+  name: '',
+  keyword: 'casual',
+  heightCm: 0,
+  weightKg: 0,
+  bio: '',
   stats: {
-    posts: 3,
-    following: MOCK_FOLLOWING.length,
-    followers: MOCK_FOLLOWERS.length,
+    posts: 0,
+    following: 0,
+    followers: 0,
   },
   avatarUri: undefined,
 };

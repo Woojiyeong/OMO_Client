@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from '@/components/profile/avatar';
 import { KeywordAvatar } from '@/components/profile/keyword-avatar';
 import { ProfileStats } from '@/components/profile/profile-stats';
 import { FollowButton } from '@/components/social/follow-button';
@@ -15,6 +16,9 @@ type Props = {
   following: boolean;
   pending: boolean;
   onPressFollow: () => void;
+  onPressReport?: () => void;
+  onFollowingPress?: () => void;
+  onFollowersPress?: () => void;
 };
 
 export function OtherProfileHeader({
@@ -23,17 +27,26 @@ export function OtherProfileHeader({
   following,
   pending,
   onPressFollow,
+  onPressReport,
+  onFollowingPress,
+  onFollowersPress,
 }: Props) {
   const nickname = formatNickname(user.keyword, user.name);
 
   return (
     <View>
       <View style={styles.topRow}>
-        <KeywordAvatar keyword={user.keyword} seed={user.id} size={80} />
+        {user.avatarUri ? (
+          <Avatar uri={user.avatarUri} size={80} />
+        ) : (
+          <KeywordAvatar keyword={user.keyword} seed={user.id} size={80} />
+        )}
         <ProfileStats
           posts={user.stats.posts}
           following={user.stats.following}
           followers={user.stats.followers}
+          onFollowingPress={onFollowingPress}
+          onFollowersPress={onFollowersPress}
         />
       </View>
 
@@ -55,6 +68,16 @@ export function OtherProfileHeader({
             onPress={onPressFollow}
             variant="block"
           />
+          {onPressReport ? (
+            <Pressable
+              onPress={onPressReport}
+              accessibilityRole="button"
+              accessibilityLabel="유저 신고하기"
+              style={styles.reportButton}
+            >
+              <Text style={styles.reportText}>유저 신고하기</Text>
+            </Pressable>
+          ) : null}
         </View>
       )}
     </View>
@@ -89,5 +112,16 @@ const styles = StyleSheet.create({
   },
   followWrap: {
     marginTop: Spacing.md,
+    gap: Spacing.sm,
+  },
+  reportButton: {
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reportText: {
+    fontFamily: FontFamily.semibold,
+    fontSize: 13,
+    color: Palette.gray500,
   },
 });

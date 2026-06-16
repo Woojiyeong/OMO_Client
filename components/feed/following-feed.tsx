@@ -1,19 +1,53 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { EmptyFollowState } from '@/components/social/empty-follow-state';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
-import { MOCK_FEED_POSTS } from '@/features/feed/mock';
+import { fetchPostsPage } from '@/features/feed/api';
+import type { FeedPost } from '@/features/feed/types';
 import { useSocialStore } from '@/features/social/store';
 
 import { PostCard } from './post-card';
 
 export function FollowingFeed() {
   const [refreshing, setRefreshing] = useState(false);
+  const [posts, setPosts] = useState<FeedPost[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
 
   const following = useSocialStore((s) => s.following);
   const loadFollowing = useSocialStore((s) => s.loadFollowing);
+
+  const loadPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const page = await fetchPostsPage({ sort: 'following' });
+      setPosts(page.posts);
+      setNextCursor(page.nextCursor);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const loadMore = useCallback(async () => {
+    if (!nextCursor || loading || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const page = await fetchPostsPage({
+        sort: 'following',
+        cursor: nextCursor,
+      });
+      setPosts((prev) => {
+        const seen = new Set(prev.map((post) => post.id));
+        return [...prev, ...page.posts.filter((post) => !seen.has(post.id))];
+      });
+      setNextCursor(page.nextCursor);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loading, loadingMore, nextCursor]);
 
   useEffect(() => {
     if (following.length === 0) {
@@ -21,27 +55,18 @@ export function FollowingFeed() {
     }
   }, [following.length, loadFollowing]);
 
-  const followedIds = useMemo(
-    () => new Set(following.map((u) => u.id)),
-    [following],
-  );
-
-  const posts = useMemo(
-    () =>
-      MOCK_FEED_POSTS.filter(
-        (p) => p.author.id !== 'me' && followedIds.has(p.author.id),
-      ),
-    [followedIds],
-  );
+  useEffect(() => {
+    loadPosts().catch(() => {});
+  }, [loadPosts]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await loadFollowing();
+      await Promise.all([loadFollowing(true), loadPosts()]);
     } finally {
       setRefreshing(false);
     }
-  }, [loadFollowing]);
+  }, [loadFollowing, loadPosts]);
 
   return (
     <FlatList
@@ -51,7 +76,9 @@ export function FollowingFeed() {
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       contentContainerStyle={posts.length === 0 ? styles.emptyContent : styles.content}
       showsVerticalScrollIndicator={false}
-      ListEmptyComponent={<EmptyFollowState type="following" />}
+      ListEmptyComponent={loading ? null : <EmptyFollowState type="following" />}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.6}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

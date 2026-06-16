@@ -1,0 +1,2029 @@
+{
+  "generatedAt": "2026-06-16T07:31:18.275Z",
+  "apiBaseUrl": "https://omo.mirim-it-show.site/api/v1",
+  "includeMutations": true,
+  "state": {
+    "postId": "a0bbb685-a181-4301-a794-d7197fe1c8b6",
+    "userId": "dba723f5-9697-47ab-8174-c940ce64686e",
+    "otherUserId": "91461e76-b4c7-434c-98c9-a2da1c378a58",
+    "productId": null,
+    "detectedProductId": "66a70a5c-997b-4a3f-95cd-260d84256f51",
+    "aiSessionId": "0adea6f7-1051-4d0e-9283-a8b6cda4aede",
+    "createdPostId": "23dd9097-998a-4b04-8d82-5f7fe372e60e"
+  },
+  "results": [
+    {
+      "name": "auth.login",
+      "method": "POST",
+      "path": "/auth/login",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 456,
+      "body": {
+        "accessToken": "[redacted]",
+        "refreshToken": "[redacted]"
+      },
+      "error": null
+    },
+    {
+      "name": "server.root",
+      "method": "GET",
+      "path": "/",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 33,
+      "body": "Hello OMO!!",
+      "error": null
+    },
+    {
+      "name": "auth.checkLoginId",
+      "method": "GET",
+      "path": "/auth/check-login-id?loginId=probe_1781595065134",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 11,
+      "body": {
+        "available": true
+      },
+      "error": null
+    },
+    {
+      "name": "posts.list.trending",
+      "method": "GET",
+      "path": "/posts?sort=trending&limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 38,
+      "body": {
+        "posts": [
+          {
+            "id": "a0bbb685-a181-4301-a794-d7197fe1c8b6",
+            "title": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "description": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "viewCount": 317,
+            "likeCount": 3,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:30.046Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "9fd467ad-9357-450d-9895-1aeb18285505",
+                "imageUrl": "/uploads/snap-1510948665592740959-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "b5e28652-a0fc-4fb6-b73a-b39b1f228005",
+                "name": "미니멀"
+              },
+              {
+                "id": "a5d5be15-d54e-4d35-b4f1-82c26b8e8a8b",
+                "name": "캠퍼스"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "66a70a5c-997b-4a3f-95cd-260d84256f51",
+                "name": "린넨 라이크 체크 반팔 셔츠 ( 네이비 )",
+                "brand": "브렌슨",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260512/6463419/6463419_17811421240701_500.jpg",
+                "price": 26700,
+                "purchaseUrl": "https://www.musinsa.com/products/6463419",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "2d7aea6f-47a0-458b-903a-e203a3078df6",
+            "title": "레이브 블라우스 체크 데일리",
+            "description": "#레이브 #블라우스 #체크 #데일리 ",
+            "viewCount": 118,
+            "likeCount": 4,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:30.647Z",
+            "author": {
+              "id": "91461e76-b4c7-434c-98c9-a2da1c378a58",
+              "nickname": "Mine_04",
+              "profileImage": "https://image.msscdn.net/thumbnails/mfile_s01/_simbols/b/ff759ef6bb9c5c7c02848f35c57ed1ce_20260603214059."
+            },
+            "images": [
+              {
+                "id": "a3c1cdb7-547e-41cd-9e6c-ea515aa41fd4",
+                "imageUrl": "/uploads/snap-1510684868724990926-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              },
+              {
+                "id": "05c8ad03-7a6d-490e-b983-ae09f06b65c4",
+                "name": "레이브"
+              },
+              {
+                "id": "05ebebdb-cb99-4805-9a9e-a7f5b6c6930a",
+                "name": "블라우스"
+              },
+              {
+                "id": "c3138b4e-ab83-4b40-a212-39080a98af45",
+                "name": "체크"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "23f0debb-ae6b-4290-9f14-12217eaa8471",
+                "name": "봄"
+              },
+              {
+                "id": "a50179d6-ca0d-4cfc-ac7e-4e60477036cc",
+                "name": "걸리시"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "82b1d352-aede-4a35-9218-5c583c8c99d1",
+                "name": "Check Banding Blouse VW6MB415_2color",
+                "brand": "레이브",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260519/6510157/6510157_17791768093376_500.jpg",
+                "price": 115200,
+                "purchaseUrl": "https://www.musinsa.com/products/6510157",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "b59cef22-5ee9-4dde-b1c0-3bc5abe82a1b",
+            "title": "AI_박시온 33",
+            "description": "스트라이프 슬리브리스에 대미지 스웨트팬츠를 매치한 볼륨 실루엣 스타일\n\n#무신사걸즈 #여름코디 #여자코디 #ootd #오오티디 #데일리룩 #dailylook #오늘의스냅 #와이드팬츠 #슬리브리스 #크롭 #스트라이프 #비비드 #스웨트팬츠코디 #실버템 #체인 #볼륨실루엣 #에디터_박시온 #AI무신사코디",
+            "viewCount": 4071,
+            "likeCount": 4400,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:28.258Z",
+            "author": {
+              "id": "668ffd6b-e7d5-4a49-b423-d1ec0db8ae0a",
+              "nickname": "무신사 코디",
+              "profileImage": "https://image.msscdn.net/thumbnails/mfile_s01/_simbols/c/519e43d660b1c42427d168e329c80eef_20250416104103."
+            },
+            "images": [
+              {
+                "id": "7dad23b6-3494-48ed-8229-df92ae742271",
+                "imageUrl": "/uploads/snap-1507298339629835005-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "9ea3259a-91f1-4a85-8328-24f5514394cf",
+                "name": "AI무신사코디"
+              },
+              {
+                "id": "2eec3fa5-26b9-406e-a9bf-198a294b0951",
+                "name": "dailylook"
+              },
+              {
+                "id": "174ca086-9bc3-4237-9851-c4634d5c96e3",
+                "name": "ootd"
+              },
+              {
+                "id": "ad6a7de1-5cc5-4467-a61c-a61ae6501cdb",
+                "name": "데일리룩"
+              },
+              {
+                "id": "1092a04e-ab0d-4cf6-a76b-d6f3699104c5",
+                "name": "무신사걸즈"
+              },
+              {
+                "id": "a8c10608-c2dd-456d-b825-cb532ed5eeef",
+                "name": "볼륨실루엣"
+              },
+              {
+                "id": "503d93e5-5bff-4a4a-99bd-bf6cec8df521",
+                "name": "비비드"
+              },
+              {
+                "id": "ccf4c028-95ab-479f-9a11-ed59a0764646",
+                "name": "스웨트팬츠코디"
+              },
+              {
+                "id": "6fe1ea3a-4874-4c02-90c6-66fe48695ae8",
+                "name": "스트라이프"
+              },
+              {
+                "id": "d5d57dd7-b4fa-4f5c-813a-fd40c71e983e",
+                "name": "슬리브리스"
+              },
+              {
+                "id": "379274b3-ef6d-4b4e-8276-429dbe5f26e9",
+                "name": "실버템"
+              },
+              {
+                "id": "d4f8db26-b6f8-4d83-8698-d58e61e02916",
+                "name": "에디터_박시온"
+              },
+              {
+                "id": "cc94b21f-98e2-4e39-9fb8-badce9ae8212",
+                "name": "여름코디"
+              },
+              {
+                "id": "278f5668-166b-4b87-8842-e6bb4eb751cc",
+                "name": "여자코디"
+              },
+              {
+                "id": "660bf6e4-5886-4803-87b6-5bdd154fc473",
+                "name": "오늘의스냅"
+              },
+              {
+                "id": "25930ddd-f0a2-48e0-83f4-69e6fa49fdcd",
+                "name": "오오티디"
+              },
+              {
+                "id": "61664273-afde-40f8-b842-7e4c6c2ff197",
+                "name": "와이드팬츠"
+              },
+              {
+                "id": "fdb65cfa-6a83-49fa-af1b-0457d344dfde",
+                "name": "체인"
+              },
+              {
+                "id": "ee8a065d-88f0-444c-831a-24bef2f73f56",
+                "name": "크롭"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "d5768912-55ac-453f-8965-d2f3c848360f",
+                "name": "스트릿"
+              },
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "35e2d328-936d-4ede-8923-a79920b0f1ec",
+                "name": "HEADBAND SET PONY BUTTON STRIPE SLEEVELESS RED",
+                "brand": "론론",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260503/6414294/6414294_17780604051738_500.jpg",
+                "price": 38500,
+                "purchaseUrl": "https://www.musinsa.com/products/6414294",
+                "category": "민소매 티셔츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "144737c7-3a8d-46bb-983a-0da1ba69c305",
+                "name": "[희재 PICK] Cross Hotfix Damage Jogger - Black",
+                "brand": "락케이크",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260126/5938990/5938990_17767331958989_500.jpg",
+                "price": 93170,
+                "purchaseUrl": "https://www.musinsa.com/products/5938990",
+                "category": "트레이닝/조거 팬츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "ccb3c4c7-ee53-4ded-b3d9-0656ff0dff33",
+                "name": "트리니티 버클 샌들 블랙",
+                "brand": "기호",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20250414/5025521/5025521_17457284370632_500.jpg",
+                "price": 123250,
+                "purchaseUrl": "https://www.musinsa.com/products/5025521",
+                "category": "샌들/슬리퍼",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "62a0a4bd-e7e8-40cc-bed6-9566a56780b6",
+                "name": "Mini Chain Toast Bag - 4Color",
+                "brand": "썸웨어버터",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20250122/4738255/4738255_17401248999422_500.jpg",
+                "price": 97200,
+                "purchaseUrl": "https://www.musinsa.com/products/4738255",
+                "category": "숄더백",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "b71b4e20-c7b7-4987-9379-ffc36d2e08ce",
+                "name": "스터드 로고 벨트 블랙",
+                "brand": "와이케이",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20251010/5576334/5576334_17606036078628_500.jpg",
+                "price": 58800,
+                "purchaseUrl": "https://www.musinsa.com/products/5576334",
+                "category": "벨트",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "4210a600-8882-4afa-b500-dc7acaa0b045",
+                "name": "Mini Apple Charms Necklace (Silver Gold)",
+                "brand": "시눈",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260429/6397393/6397393_17775465320091_500.jpg",
+                "price": 46400,
+                "purchaseUrl": "https://www.musinsa.com/products/6397393",
+                "category": "주얼리",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "27cc1ab2-cb5c-4774-b47d-d5323880e55d",
+                "name": "벌룬 스타 하트 팔찌",
+                "brand": "와이케이",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260430/6412419/6412419_17787355384938_500.jpg",
+                "price": 39200,
+                "purchaseUrl": "https://www.musinsa.com/products/6412419",
+                "category": "주얼리",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "630d3c30-d933-4002-9220-c157a7a937b0",
+            "title": "👚TOP&OUTER : 루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC5",
+            "description": "👚TOP&OUTER : 루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC536\n\n#데이트룩 #오늘의스냅 #꾸안꾸 #체형커버코디 #여행코디 #제너럴아이디어 #오늘의스냅 #꾸안꾸 #하객룩 #무진장블프 #크로셰가디건 #제너럴아이디어가디건 #제너럴아이디어크로셰 #휴가룩 #무진장 #하루특가 #제너럴아이디어셔츠 #무배당발 #펀칭블라우스 #휴양지룩",
+            "viewCount": 101,
+            "likeCount": 3,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:31.370Z",
+            "author": {
+              "id": "5e039415-50fa-4cfa-b5f9-899397797ac3",
+              "nickname": "제너럴아이디어",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/generalideastandard.png?20240418113747"
+            },
+            "images": [
+              {
+                "id": "cf1fc9a4-a452-401c-908f-21ebd7c273d0",
+                "imageUrl": "/uploads/snap-1510945941264031516-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "8892cba1-e21f-4740-89e7-51953b8c3342",
+                "name": "꾸안꾸"
+              },
+              {
+                "id": "2473b045-0fdc-4b47-a925-f63e4724e1df",
+                "name": "데이트룩"
+              },
+              {
+                "id": "42ea8e20-57c5-4442-b66e-c7b4a2d6ce35",
+                "name": "무배당발"
+              },
+              {
+                "id": "df240fbc-72b1-4c4e-b56e-d9364bafac38",
+                "name": "무진장"
+              },
+              {
+                "id": "0d260576-bb5d-437c-9618-40e5fa22283d",
+                "name": "무진장블프"
+              },
+              {
+                "id": "d4cfe395-7abd-415e-830a-b794d60a3f80",
+                "name": "여행코디"
+              },
+              {
+                "id": "660bf6e4-5886-4803-87b6-5bdd154fc473",
+                "name": "오늘의스냅"
+              },
+              {
+                "id": "f5920b15-17f5-4f89-a0cd-6a0e13c56f19",
+                "name": "제너럴아이디어"
+              },
+              {
+                "id": "656b8ac6-e01e-405f-baef-b7529726a114",
+                "name": "제너럴아이디어가디건"
+              },
+              {
+                "id": "71db765d-22dd-43aa-b588-477014433302",
+                "name": "제너럴아이디어셔츠"
+              },
+              {
+                "id": "c116f2e5-804a-4ffa-975e-5704d069e055",
+                "name": "제너럴아이디어크로셰"
+              },
+              {
+                "id": "3f1cd10b-cd2a-4e44-bb12-13d8d63acd6b",
+                "name": "체형커버코디"
+              },
+              {
+                "id": "87546ff7-23fb-4403-b3c3-1633084c6d0d",
+                "name": "크로셰가디건"
+              },
+              {
+                "id": "774e881a-72bf-4429-963a-2c6c4f5dd352",
+                "name": "펀칭블라우스"
+              },
+              {
+                "id": "0f443a47-6638-4e2e-b97a-8b8895a5af05",
+                "name": "하객룩"
+              },
+              {
+                "id": "ec83a90e-8d76-4104-be56-0295dce330a9",
+                "name": "하루특가"
+              },
+              {
+                "id": "15106e42-57fd-499f-a921-5d59817e7e92",
+                "name": "휴가룩"
+              },
+              {
+                "id": "321e81f0-54c5-45a9-97ef-181a459a4665",
+                "name": "휴양지룩"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "19c0b396-0adc-4d05-a218-a2021980562f",
+                "name": "로맨틱"
+              },
+              {
+                "id": "cf069c9c-e915-4d2a-aac2-908a366644b6",
+                "name": "에스닉"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              },
+              {
+                "id": "2d400d1d-980e-4e63-b756-404224cca6d3",
+                "name": "바다/수영"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "a1567dc2-2c50-4e88-bd0d-377ccc1aa112",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432282/6432282_17781216964762_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432282",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "851267ec-b4e7-457a-9e25-2f5b27803c09",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [DARK NAVY] / GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432280/6432280_17781216884733_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432280",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "724d442a-52a4-40da-adf0-3475c1849a63",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [DARKBROWN]/GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432277/6432277_17781216804913_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432277",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "9caa124d-eff9-48ed-aa27-2d85652fd6da",
+            "title": "광고 무신사 어널러코드",
+            "description": "#광고 #무신사 #어널러코드",
+            "viewCount": 131,
+            "likeCount": 4,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:26.163Z",
+            "author": {
+              "id": "21500f5b-de2e-4872-8019-32de86970a05",
+              "nickname": "준며든다",
+              "profileImage": "https://image.msscdn.net/thumbnails/mfile_s01/_simbols/p/1c0e651e218560f71092312bc4d7f184_20260421184311."
+            },
+            "images": [
+              {
+                "id": "0aa78045-d550-4792-9d0b-282bd5cf7a09",
+                "imageUrl": "/uploads/snap-1510689561009478972-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "5e570f76-a4c2-4543-a617-061fbf5d2534",
+                "name": "광고"
+              },
+              {
+                "id": "42f12c70-676a-41a4-b71d-1ee7bf799302",
+                "name": "무신사"
+              },
+              {
+                "id": "3cab84d2-dff2-4fbc-9554-36d5f74d379b",
+                "name": "어널러코드"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "e9eff094-fc94-43fa-a1cf-3c5c4a9d1933",
+                "name": "하이프 하프 데님팬츠 (블루)",
+                "brand": "어널러코드",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260506/6426518/6426518_17780536484756_500.jpg",
+                "price": 39200,
+                "purchaseUrl": "https://www.musinsa.com/products/6426518",
+                "category": "숏 팬츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          }
+        ],
+        "nextCursor": "9caa124d-eff9-48ed-aa27-2d85652fd6da"
+      },
+      "error": null
+    },
+    {
+      "name": "posts.list.following",
+      "method": "GET",
+      "path": "/posts?sort=following&limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 15,
+      "body": {
+        "posts": [],
+        "nextCursor": null
+      },
+      "error": null
+    },
+    {
+      "name": "auth.profile.get",
+      "method": "GET",
+      "path": "/auth/profile",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 12,
+      "body": {
+        "id": "cf9e3282-00b2-445e-a879-affe2f99d29a",
+        "loginId": "TestUser2",
+        "nickname": "테스트",
+        "email": "s2461@e-mirim.hs.kr",
+        "isEmailVerified": true,
+        "styleKeyword": "LOVELY",
+        "height": 165,
+        "weight": 60,
+        "bio": null,
+        "profileImage": null,
+        "role": "USER",
+        "createdAt": "2026-06-16T07:08:18.879Z"
+      },
+      "error": null
+    },
+    {
+      "name": "ai.chat.session",
+      "method": "POST",
+      "path": "/ai/chat/session",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 13,
+      "body": {
+        "sessionId": "0adea6f7-1051-4d0e-9283-a8b6cda4aede"
+      },
+      "error": null
+    },
+    {
+      "name": "ai.chat",
+      "method": "POST",
+      "path": "/ai/chat",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 221,
+      "body": {
+        "sessionId": "0adea6f7-1051-4d0e-9283-a8b6cda4aede",
+        "posts": [
+          {
+            "id": "a0bbb685-a181-4301-a794-d7197fe1c8b6",
+            "title": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "description": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "viewCount": 317,
+            "likeCount": 3,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:30.046Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511",
+              "gender": "MALE",
+              "height": 176,
+              "weight": 70
+            },
+            "images": [
+              {
+                "id": "9fd467ad-9357-450d-9895-1aeb18285505",
+                "imageUrl": "/uploads/snap-1510948665592740959-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "b5e28652-a0fc-4fb6-b73a-b39b1f228005",
+                "name": "미니멀"
+              },
+              {
+                "id": "a5d5be15-d54e-4d35-b4f1-82c26b8e8a8b",
+                "name": "캠퍼스"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "66a70a5c-997b-4a3f-95cd-260d84256f51",
+                "name": "린넨 라이크 체크 반팔 셔츠 ( 네이비 )",
+                "brand": "브렌슨",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260512/6463419/6463419_17811421240701_500.jpg",
+                "price": 26700,
+                "purchaseUrl": "https://www.musinsa.com/products/6463419",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false,
+            "musinsaUrl": null
+          },
+          {
+            "id": "2d7aea6f-47a0-458b-903a-e203a3078df6",
+            "title": "레이브 블라우스 체크 데일리",
+            "description": "#레이브 #블라우스 #체크 #데일리 ",
+            "viewCount": 118,
+            "likeCount": 4,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:30.647Z",
+            "author": {
+              "id": "91461e76-b4c7-434c-98c9-a2da1c378a58",
+              "nickname": "Mine_04",
+              "profileImage": "https://image.msscdn.net/thumbnails/mfile_s01/_simbols/b/ff759ef6bb9c5c7c02848f35c57ed1ce_20260603214059.",
+              "gender": "FEMALE",
+              "height": 160,
+              "weight": 54
+            },
+            "images": [
+              {
+                "id": "a3c1cdb7-547e-41cd-9e6c-ea515aa41fd4",
+                "imageUrl": "/uploads/snap-1510684868724990926-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              },
+              {
+                "id": "05c8ad03-7a6d-490e-b983-ae09f06b65c4",
+                "name": "레이브"
+              },
+              {
+                "id": "05ebebdb-cb99-4805-9a9e-a7f5b6c6930a",
+                "name": "블라우스"
+              },
+              {
+                "id": "c3138b4e-ab83-4b40-a212-39080a98af45",
+                "name": "체크"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "23f0debb-ae6b-4290-9f14-12217eaa8471",
+                "name": "봄"
+              },
+              {
+                "id": "a50179d6-ca0d-4cfc-ac7e-4e60477036cc",
+                "name": "걸리시"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "82b1d352-aede-4a35-9218-5c583c8c99d1",
+                "name": "Check Banding Blouse VW6MB415_2color",
+                "brand": "레이브",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260519/6510157/6510157_17791768093376_500.jpg",
+                "price": 115200,
+                "purchaseUrl": "https://www.musinsa.com/products/6510157",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false,
+            "musinsaUrl": null
+          },
+          {
+            "id": "b59cef22-5ee9-4dde-b1c0-3bc5abe82a1b",
+            "title": "AI_박시온 33",
+            "description": "스트라이프 슬리브리스에 대미지 스웨트팬츠를 매치한 볼륨 실루엣 스타일\n\n#무신사걸즈 #여름코디 #여자코디 #ootd #오오티디 #데일리룩 #dailylook #오늘의스냅 #와이드팬츠 #슬리브리스 #크롭 #스트라이프 #비비드 #스웨트팬츠코디 #실버템 #체인 #볼륨실루엣 #에디터_박시온 #AI무신사코디",
+            "viewCount": 4071,
+            "likeCount": 4400,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:28.258Z",
+            "author": {
+              "id": "668ffd6b-e7d5-4a49-b423-d1ec0db8ae0a",
+              "nickname": "무신사 코디",
+              "profileImage": "https://image.msscdn.net/thumbnails/mfile_s01/_simbols/c/519e43d660b1c42427d168e329c80eef_20250416104103.",
+              "gender": "FEMALE",
+              "height": 171,
+              "weight": 46
+            },
+            "images": [
+              {
+                "id": "7dad23b6-3494-48ed-8229-df92ae742271",
+                "imageUrl": "/uploads/snap-1507298339629835005-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "9ea3259a-91f1-4a85-8328-24f5514394cf",
+                "name": "AI무신사코디"
+              },
+              {
+                "id": "2eec3fa5-26b9-406e-a9bf-198a294b0951",
+                "name": "dailylook"
+              },
+              {
+                "id": "174ca086-9bc3-4237-9851-c4634d5c96e3",
+                "name": "ootd"
+              },
+              {
+                "id": "ad6a7de1-5cc5-4467-a61c-a61ae6501cdb",
+                "name": "데일리룩"
+              },
+              {
+                "id": "1092a04e-ab0d-4cf6-a76b-d6f3699104c5",
+                "name": "무신사걸즈"
+              },
+              {
+                "id": "a8c10608-c2dd-456d-b825-cb532ed5eeef",
+                "name": "볼륨실루엣"
+              },
+              {
+                "id": "503d93e5-5bff-4a4a-99bd-bf6cec8df521",
+                "name": "비비드"
+              },
+              {
+                "id": "ccf4c028-95ab-479f-9a11-ed59a0764646",
+                "name": "스웨트팬츠코디"
+              },
+              {
+                "id": "6fe1ea3a-4874-4c02-90c6-66fe48695ae8",
+                "name": "스트라이프"
+              },
+              {
+                "id": "d5d57dd7-b4fa-4f5c-813a-fd40c71e983e",
+                "name": "슬리브리스"
+              },
+              {
+                "id": "379274b3-ef6d-4b4e-8276-429dbe5f26e9",
+                "name": "실버템"
+              },
+              {
+                "id": "d4f8db26-b6f8-4d83-8698-d58e61e02916",
+                "name": "에디터_박시온"
+              },
+              {
+                "id": "cc94b21f-98e2-4e39-9fb8-badce9ae8212",
+                "name": "여름코디"
+              },
+              {
+                "id": "278f5668-166b-4b87-8842-e6bb4eb751cc",
+                "name": "여자코디"
+              },
+              {
+                "id": "660bf6e4-5886-4803-87b6-5bdd154fc473",
+                "name": "오늘의스냅"
+              },
+              {
+                "id": "25930ddd-f0a2-48e0-83f4-69e6fa49fdcd",
+                "name": "오오티디"
+              },
+              {
+                "id": "61664273-afde-40f8-b842-7e4c6c2ff197",
+                "name": "와이드팬츠"
+              },
+              {
+                "id": "fdb65cfa-6a83-49fa-af1b-0457d344dfde",
+                "name": "체인"
+              },
+              {
+                "id": "ee8a065d-88f0-444c-831a-24bef2f73f56",
+                "name": "크롭"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "d5768912-55ac-453f-8965-d2f3c848360f",
+                "name": "스트릿"
+              },
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "35e2d328-936d-4ede-8923-a79920b0f1ec",
+                "name": "HEADBAND SET PONY BUTTON STRIPE SLEEVELESS RED",
+                "brand": "론론",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260503/6414294/6414294_17780604051738_500.jpg",
+                "price": 38500,
+                "purchaseUrl": "https://www.musinsa.com/products/6414294",
+                "category": "민소매 티셔츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "144737c7-3a8d-46bb-983a-0da1ba69c305",
+                "name": "[희재 PICK] Cross Hotfix Damage Jogger - Black",
+                "brand": "락케이크",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260126/5938990/5938990_17767331958989_500.jpg",
+                "price": 93170,
+                "purchaseUrl": "https://www.musinsa.com/products/5938990",
+                "category": "트레이닝/조거 팬츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "ccb3c4c7-ee53-4ded-b3d9-0656ff0dff33",
+                "name": "트리니티 버클 샌들 블랙",
+                "brand": "기호",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20250414/5025521/5025521_17457284370632_500.jpg",
+                "price": 123250,
+                "purchaseUrl": "https://www.musinsa.com/products/5025521",
+                "category": "샌들/슬리퍼",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "62a0a4bd-e7e8-40cc-bed6-9566a56780b6",
+                "name": "Mini Chain Toast Bag - 4Color",
+                "brand": "썸웨어버터",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20250122/4738255/4738255_17401248999422_500.jpg",
+                "price": 97200,
+                "purchaseUrl": "https://www.musinsa.com/products/4738255",
+                "category": "숄더백",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "b71b4e20-c7b7-4987-9379-ffc36d2e08ce",
+                "name": "스터드 로고 벨트 블랙",
+                "brand": "와이케이",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20251010/5576334/5576334_17606036078628_500.jpg",
+                "price": 58800,
+                "purchaseUrl": "https://www.musinsa.com/products/5576334",
+                "category": "벨트",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "4210a600-8882-4afa-b500-dc7acaa0b045",
+                "name": "Mini Apple Charms Necklace (Silver Gold)",
+                "brand": "시눈",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260429/6397393/6397393_17775465320091_500.jpg",
+                "price": 46400,
+                "purchaseUrl": "https://www.musinsa.com/products/6397393",
+                "category": "주얼리",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "27cc1ab2-cb5c-4774-b47d-d5323880e55d",
+                "name": "벌룬 스타 하트 팔찌",
+                "brand": "와이케이",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260430/6412419/6412419_17787355384938_500.jpg",
+                "price": 39200,
+                "purchaseUrl": "https://www.musinsa.com/products/6412419",
+                "category": "주얼리",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false,
+            "musinsaUrl": null
+          },
+          {
+            "id": "630d3c30-d933-4002-9220-c157a7a937b0",
+            "title": "👚TOP&OUTER : 루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC5",
+            "description": "👚TOP&OUTER : 루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC536\n\n#데이트룩 #오늘의스냅 #꾸안꾸 #체형커버코디 #여행코디 #제너럴아이디어 #오늘의스냅 #꾸안꾸 #하객룩 #무진장블프 #크로셰가디건 #제너럴아이디어가디건 #제너럴아이디어크로셰 #휴가룩 #무진장 #하루특가 #제너럴아이디어셔츠 #무배당발 #펀칭블라우스 #휴양지룩",
+            "viewCount": 101,
+            "likeCount": 3,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:31.370Z",
+            "author": {
+              "id": "5e039415-50fa-4cfa-b5f9-899397797ac3",
+              "nickname": "제너럴아이디어",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/generalideastandard.png?20240418113747",
+              "gender": "FEMALE",
+              "height": 164,
+              "weight": 42
+            },
+            "images": [
+              {
+                "id": "cf1fc9a4-a452-401c-908f-21ebd7c273d0",
+                "imageUrl": "/uploads/snap-1510945941264031516-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "8892cba1-e21f-4740-89e7-51953b8c3342",
+                "name": "꾸안꾸"
+              },
+              {
+                "id": "2473b045-0fdc-4b47-a925-f63e4724e1df",
+                "name": "데이트룩"
+              },
+              {
+                "id": "42ea8e20-57c5-4442-b66e-c7b4a2d6ce35",
+                "name": "무배당발"
+              },
+              {
+                "id": "df240fbc-72b1-4c4e-b56e-d9364bafac38",
+                "name": "무진장"
+              },
+              {
+                "id": "0d260576-bb5d-437c-9618-40e5fa22283d",
+                "name": "무진장블프"
+              },
+              {
+                "id": "d4cfe395-7abd-415e-830a-b794d60a3f80",
+                "name": "여행코디"
+              },
+              {
+                "id": "660bf6e4-5886-4803-87b6-5bdd154fc473",
+                "name": "오늘의스냅"
+              },
+              {
+                "id": "f5920b15-17f5-4f89-a0cd-6a0e13c56f19",
+                "name": "제너럴아이디어"
+              },
+              {
+                "id": "656b8ac6-e01e-405f-baef-b7529726a114",
+                "name": "제너럴아이디어가디건"
+              },
+              {
+                "id": "71db765d-22dd-43aa-b588-477014433302",
+                "name": "제너럴아이디어셔츠"
+              },
+              {
+                "id": "c116f2e5-804a-4ffa-975e-5704d069e055",
+                "name": "제너럴아이디어크로셰"
+              },
+              {
+                "id": "3f1cd10b-cd2a-4e44-bb12-13d8d63acd6b",
+                "name": "체형커버코디"
+              },
+              {
+                "id": "87546ff7-23fb-4403-b3c3-1633084c6d0d",
+                "name": "크로셰가디건"
+              },
+              {
+                "id": "774e881a-72bf-4429-963a-2c6c4f5dd352",
+                "name": "펀칭블라우스"
+              },
+              {
+                "id": "0f443a47-6638-4e2e-b97a-8b8895a5af05",
+                "name": "하객룩"
+              },
+              {
+                "id": "ec83a90e-8d76-4104-be56-0295dce330a9",
+                "name": "하루특가"
+              },
+              {
+                "id": "15106e42-57fd-499f-a921-5d59817e7e92",
+                "name": "휴가룩"
+              },
+              {
+                "id": "321e81f0-54c5-45a9-97ef-181a459a4665",
+                "name": "휴양지룩"
+              },
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "19c0b396-0adc-4d05-a218-a2021980562f",
+                "name": "로맨틱"
+              },
+              {
+                "id": "cf069c9c-e915-4d2a-aac2-908a366644b6",
+                "name": "에스닉"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              },
+              {
+                "id": "2d400d1d-980e-4e63-b756-404224cca6d3",
+                "name": "바다/수영"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "a1567dc2-2c50-4e88-bd0d-377ccc1aa112",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [IVORY] / GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432282/6432282_17781216964762_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432282",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "851267ec-b4e7-457a-9e25-2f5b27803c09",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [DARK NAVY] / GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432280/6432280_17781216884733_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432280",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              },
+              {
+                "id": "724d442a-52a4-40da-adf0-3475c1849a63",
+                "name": "루즈핏 크로셰 레이스 하프 가디건 [DARKBROWN]/GF2LKC536",
+                "brand": "제너럴아이디어",
+                "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260507/6432277/6432277_17781216804913_500.jpg",
+                "price": 69000,
+                "purchaseUrl": "https://www.musinsa.com/products/6432277",
+                "category": "카디건",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false,
+            "musinsaUrl": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "posts.detail",
+      "method": "GET",
+      "path": "/posts/a0bbb685-a181-4301-a794-d7197fe1c8b6",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 19,
+      "body": {
+        "id": "a0bbb685-a181-4301-a794-d7197fe1c8b6",
+        "title": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+        "description": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+        "viewCount": 317,
+        "likeCount": 3,
+        "bookmarkCount": 0,
+        "trendScore": 0,
+        "detectionStatus": "COMPLETED",
+        "createdAt": "2026-06-15T07:57:30.046Z",
+        "author": {
+          "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+          "nickname": "브렌슨",
+          "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+        },
+        "images": [
+          {
+            "id": "9fd467ad-9357-450d-9895-1aeb18285505",
+            "imageUrl": "/uploads/snap-1510948665592740959-0.jpg",
+            "order": 0
+          }
+        ],
+        "hashtags": [
+          {
+            "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+            "name": "여름"
+          },
+          {
+            "id": "b5e28652-a0fc-4fb6-b73a-b39b1f228005",
+            "name": "미니멀"
+          },
+          {
+            "id": "a5d5be15-d54e-4d35-b4f1-82c26b8e8a8b",
+            "name": "캠퍼스"
+          }
+        ],
+        "detectedProducts": [
+          {
+            "id": "66a70a5c-997b-4a3f-95cd-260d84256f51",
+            "name": "린넨 라이크 체크 반팔 셔츠 ( 네이비 )",
+            "brand": "브렌슨",
+            "imageUrl": "https://image.msscdn.net/thumbnails/images/goods_img/20260512/6463419/6463419_17811421240701_500.jpg",
+            "price": 26700,
+            "purchaseUrl": "https://www.musinsa.com/products/6463419",
+            "category": "셔츠/블라우스",
+            "confidence": 1,
+            "positionX": null,
+            "positionY": null,
+            "width": null,
+            "height": null,
+            "productId": null,
+            "isEdited": false
+          }
+        ],
+        "isLiked": false,
+        "isBookmarked": false
+      },
+      "error": null
+    },
+    {
+      "name": "posts.bookmarks.me",
+      "method": "GET",
+      "path": "/posts/bookmarks/me?limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 18,
+      "body": {
+        "bookmarks": [],
+        "nextCursor": null
+      },
+      "error": null
+    },
+    {
+      "name": "users.detail",
+      "method": "GET",
+      "path": "/users/dba723f5-9697-47ab-8174-c940ce64686e",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 15,
+      "body": {
+        "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+        "nickname": "브렌슨",
+        "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511",
+        "bio": null,
+        "styleKeyword": "CASUAL",
+        "followersCount": 0,
+        "followingsCount": 0,
+        "postsCount": 38,
+        "isFollowing": false
+      },
+      "error": null
+    },
+    {
+      "name": "users.posts",
+      "method": "GET",
+      "path": "/users/dba723f5-9697-47ab-8174-c940ce64686e/posts?limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 21,
+      "body": {
+        "posts": [
+          {
+            "id": "a0bbb685-a181-4301-a794-d7197fe1c8b6",
+            "title": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "description": "린넨 라이크 체크 반팔 셔츠 (네이비) L",
+            "viewCount": 318,
+            "likeCount": 3,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:57:30.046Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "9fd467ad-9357-450d-9895-1aeb18285505",
+                "imageUrl": "/uploads/snap-1510948665592740959-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "b5e28652-a0fc-4fb6-b73a-b39b1f228005",
+                "name": "미니멀"
+              },
+              {
+                "id": "a5d5be15-d54e-4d35-b4f1-82c26b8e8a8b",
+                "name": "캠퍼스"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "66a70a5c-997b-4a3f-95cd-260d84256f51",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "a64021a7-4753-45e2-99e4-fe94be2cd948",
+            "title": "린넨 라이크 체크 반팔 셔츠 ( 빈티지퍼플 )_L",
+            "description": "린넨 라이크 체크 반팔 셔츠 ( 빈티지퍼플 )_L",
+            "viewCount": 266,
+            "likeCount": 0,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:55:34.887Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "2f4512db-f031-469a-871c-33a04f84b00e",
+                "imageUrl": "/uploads/snap-1511183966421553131-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "23f0debb-ae6b-4290-9f14-12217eaa8471",
+                "name": "봄"
+              },
+              {
+                "id": "731296e5-0ba6-48ee-86e3-d49564429805",
+                "name": "캐주얼"
+              },
+              {
+                "id": "d5768912-55ac-453f-8965-d2f3c848360f",
+                "name": "스트릿"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              },
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "37a7a429-0ac2-44e5-a83b-06a786d3a0dd",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "05f6de72-0937-4366-a12b-ce75956b9785",
+            "title": "린넨 라이크 체크 반팔 셔츠 ( 카키그레이 )_XL",
+            "description": "린넨 라이크 체크 반팔 셔츠 ( 카키그레이 )_XL",
+            "viewCount": 323,
+            "likeCount": 1,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:55:28.830Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "b7c5cae1-cdb5-4e8c-bda4-5fd382727550",
+                "imageUrl": "/uploads/snap-1511185812831550616-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "23f0debb-ae6b-4290-9f14-12217eaa8471",
+                "name": "봄"
+              },
+              {
+                "id": "b5e28652-a0fc-4fb6-b73a-b39b1f228005",
+                "name": "미니멀"
+              },
+              {
+                "id": "731296e5-0ba6-48ee-86e3-d49564429805",
+                "name": "캐주얼"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              },
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "3d3760d8-603c-4863-8051-de9b03b272d7",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "dc087d81-5659-42be-8874-2fba0ceb7360",
+            "title": "린넨 라이크 체크 반팔 셔츠 (네이비) M",
+            "description": "린넨 라이크 체크 반팔 셔츠 (네이비) M",
+            "viewCount": 395,
+            "likeCount": 5,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:54:58.830Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "6150273b-64ab-403c-88b1-e3149fa500ea",
+                "imageUrl": "/uploads/snap-1510949031956470306-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "87e7e5c9-6f00-4dc6-a60d-6580f1ec95b8",
+                "name": "시티보이"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "04e3ca87-c607-462e-a3ee-9fef9a2b6ef1",
+                "category": "셔츠/블라우스",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          },
+          {
+            "id": "61257f48-3aa5-4f89-825c-4c4bc45268d4",
+            "title": "그리드 피케 반바지 ( 3Color )_베이지 XL",
+            "description": "그리드 피케 반바지 ( 3Color )_베이지 XL",
+            "viewCount": 44,
+            "likeCount": 0,
+            "bookmarkCount": 0,
+            "trendScore": 0,
+            "detectionStatus": "COMPLETED",
+            "createdAt": "2026-06-15T07:54:47.510Z",
+            "author": {
+              "id": "dba723f5-9697-47ab-8174-c940ce64686e",
+              "nickname": "브렌슨",
+              "profileImage": "https://image.musinsa.com/thumbnails/mfile_s01/_brand/free_medium/brenson.png?20240319111511"
+            },
+            "images": [
+              {
+                "id": "7ae11a85-7376-487d-a4ba-f33c0fbceedd",
+                "imageUrl": "/uploads/snap-1511212646902450232-0.jpg",
+                "order": 0
+              }
+            ],
+            "hashtags": [
+              {
+                "id": "182d12da-541f-4475-80c0-75b2d0f33042",
+                "name": "여름"
+              },
+              {
+                "id": "23f0debb-ae6b-4290-9f14-12217eaa8471",
+                "name": "봄"
+              },
+              {
+                "id": "731296e5-0ba6-48ee-86e3-d49564429805",
+                "name": "캐주얼"
+              },
+              {
+                "id": "d5768912-55ac-453f-8965-d2f3c848360f",
+                "name": "스트릿"
+              },
+              {
+                "id": "eb562a6e-b0c6-4dcb-86dd-36da8dbb0899",
+                "name": "데이트"
+              },
+              {
+                "id": "655f017c-1dcf-4e45-bf18-adcf6bae6c78",
+                "name": "데일리"
+              }
+            ],
+            "detectedProducts": [
+              {
+                "id": "12edd8ef-26df-472d-b316-1d71dc235c4e",
+                "category": "숏 팬츠",
+                "confidence": 1,
+                "positionX": null,
+                "positionY": null,
+                "width": null,
+                "height": null,
+                "productId": null,
+                "isEdited": false
+              }
+            ],
+            "isLiked": false,
+            "isBookmarked": false
+          }
+        ],
+        "nextCursor": "61257f48-3aa5-4f89-825c-4c4bc45268d4"
+      },
+      "error": null
+    },
+    {
+      "name": "users.followers",
+      "method": "GET",
+      "path": "/users/dba723f5-9697-47ab-8174-c940ce64686e/followers?limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 16,
+      "body": {
+        "items": [],
+        "nextCursor": null,
+        "hasNext": false
+      },
+      "error": null
+    },
+    {
+      "name": "users.followings",
+      "method": "GET",
+      "path": "/users/dba723f5-9697-47ab-8174-c940ce64686e/followings?limit=5",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 12,
+      "body": {
+        "items": [],
+        "nextCursor": null,
+        "hasNext": false
+      },
+      "error": null
+    },
+    {
+      "name": "users.followStatus",
+      "method": "GET",
+      "path": "/users/dba723f5-9697-47ab-8174-c940ce64686e/follow-status",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 10,
+      "body": {
+        "isFollowing": false,
+        "isFollower": false
+      },
+      "error": null
+    },
+    {
+      "name": "auth.refresh",
+      "method": "POST",
+      "path": "/auth/refresh",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 16,
+      "body": {
+        "accessToken": "[redacted]",
+        "refreshToken": "[redacted]"
+      },
+      "error": null
+    },
+    {
+      "name": "ai.search",
+      "method": "POST",
+      "path": "/ai/search",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 12430,
+      "body": {
+        "items": [
+          {
+            "category": "bottom",
+            "croppedImagePath": "uploads/items/bottom/e405032e33d2475bad71dabf21affa1b.png",
+            "products": []
+          },
+          {
+            "category": "top",
+            "croppedImagePath": "uploads/items/top/04db09e319284ab0852f385a06f92b06.png",
+            "products": []
+          },
+          {
+            "category": "shoes",
+            "croppedImagePath": "uploads/items/shoes/99bb2b82632c4e1e9c1765c6a655ed65.png",
+            "products": []
+          },
+          {
+            "category": "bag",
+            "croppedImagePath": "uploads/items/bag/9374e1f975f94d55a76e51a9a14ca155.png",
+            "products": []
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "auth.profile.image",
+      "method": "POST",
+      "path": "/auth/profile/image",
+      "auth": true,
+      "status": 404,
+      "ok": false,
+      "durationMs": 27,
+      "body": {
+        "message": "Cannot POST /api/v1/auth/profile/image",
+        "error": "Not Found",
+        "statusCode": 404
+      },
+      "error": null
+    },
+    {
+      "name": "posts.create",
+      "method": "POST",
+      "path": "/posts",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 38,
+      "body": {
+        "id": "23dd9097-998a-4b04-8d82-5f7fe372e60e",
+        "title": "probe-1781595078035",
+        "description": "temporary API probe post",
+        "viewCount": 0,
+        "likeCount": 0,
+        "bookmarkCount": 0,
+        "trendScore": 0,
+        "detectionStatus": "PENDING",
+        "createdAt": "2026-06-16T07:31:18.200Z",
+        "author": {
+          "id": "cf9e3282-00b2-445e-a879-affe2f99d29a",
+          "nickname": "테스트",
+          "profileImage": null
+        },
+        "images": [
+          {
+            "id": "0442956a-0023-442f-a18f-127fcb0544d9",
+            "imageUrl": "/uploads/1781595078198-272805917.png",
+            "order": 0
+          }
+        ],
+        "hashtags": [
+          {
+            "id": "f4eb47ce-7a19-42dd-a3c3-3fc4f632790c",
+            "name": "probe"
+          }
+        ],
+        "detectedProducts": []
+      },
+      "error": null
+    },
+    {
+      "name": "posts.update",
+      "method": "PATCH",
+      "path": "/posts/23dd9097-998a-4b04-8d82-5f7fe372e60e",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 46,
+      "body": {
+        "id": "23dd9097-998a-4b04-8d82-5f7fe372e60e",
+        "title": "probe-updated-1781595078073",
+        "description": "temporary API probe post updated",
+        "viewCount": 0,
+        "likeCount": 0,
+        "bookmarkCount": 0,
+        "trendScore": 0,
+        "detectionStatus": "PENDING",
+        "createdAt": "2026-06-16T07:31:18.200Z",
+        "author": {
+          "id": "cf9e3282-00b2-445e-a879-affe2f99d29a",
+          "nickname": "테스트",
+          "profileImage": null
+        },
+        "images": [
+          {
+            "id": "0442956a-0023-442f-a18f-127fcb0544d9",
+            "imageUrl": "/uploads/1781595078198-272805917.png",
+            "order": 0
+          }
+        ],
+        "hashtags": [
+          {
+            "id": "f4eb47ce-7a19-42dd-a3c3-3fc4f632790c",
+            "name": "probe"
+          }
+        ],
+        "detectedProducts": []
+      },
+      "error": null
+    },
+    {
+      "name": "posts.detect",
+      "method": "POST",
+      "path": "/posts/23dd9097-998a-4b04-8d82-5f7fe372e60e/detect",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 12,
+      "body": {
+        "detectionStatus": "PENDING"
+      },
+      "error": null
+    },
+    {
+      "name": "posts.detectedProducts.update.empty",
+      "method": "PATCH",
+      "path": "/posts/23dd9097-998a-4b04-8d82-5f7fe372e60e/detected-products",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 18,
+      "body": {
+        "id": "23dd9097-998a-4b04-8d82-5f7fe372e60e",
+        "title": "probe-updated-1781595078073",
+        "description": "temporary API probe post updated",
+        "viewCount": 0,
+        "likeCount": 0,
+        "bookmarkCount": 0,
+        "trendScore": 0,
+        "detectionStatus": "PROCESSING",
+        "createdAt": "2026-06-16T07:31:18.200Z",
+        "author": {
+          "id": "cf9e3282-00b2-445e-a879-affe2f99d29a",
+          "nickname": "테스트",
+          "profileImage": null
+        },
+        "images": [
+          {
+            "id": "0442956a-0023-442f-a18f-127fcb0544d9",
+            "imageUrl": "/uploads/1781595078198-272805917.png",
+            "order": 0
+          }
+        ],
+        "hashtags": [
+          {
+            "id": "f4eb47ce-7a19-42dd-a3c3-3fc4f632790c",
+            "name": "probe"
+          }
+        ],
+        "detectedProducts": []
+      },
+      "error": null
+    },
+    {
+      "name": "posts.like.toggle",
+      "method": "POST",
+      "path": "/posts/a0bbb685-a181-4301-a794-d7197fe1c8b6/like",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 17,
+      "body": {
+        "liked": true
+      },
+      "error": null
+    },
+    {
+      "name": "posts.like.toggleBack",
+      "method": "POST",
+      "path": "/posts/a0bbb685-a181-4301-a794-d7197fe1c8b6/like",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 16,
+      "body": {
+        "liked": false
+      },
+      "error": null
+    },
+    {
+      "name": "posts.bookmark.toggle",
+      "method": "POST",
+      "path": "/posts/a0bbb685-a181-4301-a794-d7197fe1c8b6/bookmark",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 16,
+      "body": {
+        "bookmarked": true
+      },
+      "error": null
+    },
+    {
+      "name": "posts.bookmark.toggleBack",
+      "method": "POST",
+      "path": "/posts/a0bbb685-a181-4301-a794-d7197fe1c8b6/bookmark",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 16,
+      "body": {
+        "bookmarked": false
+      },
+      "error": null
+    },
+    {
+      "name": "users.follow",
+      "method": "POST",
+      "path": "/users/91461e76-b4c7-434c-98c9-a2da1c378a58/follow",
+      "auth": true,
+      "status": 201,
+      "ok": true,
+      "durationMs": 17,
+      "body": {
+        "following": true
+      },
+      "error": null
+    },
+    {
+      "name": "users.unfollow",
+      "method": "DELETE",
+      "path": "/users/91461e76-b4c7-434c-98c9-a2da1c378a58/follow",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 15,
+      "body": {
+        "following": false
+      },
+      "error": null
+    },
+    {
+      "name": "posts.delete",
+      "method": "DELETE",
+      "path": "/posts/23dd9097-998a-4b04-8d82-5f7fe372e60e",
+      "auth": true,
+      "status": 200,
+      "ok": true,
+      "durationMs": 13,
+      "body": null,
+      "error": null
+    },
+    {
+      "name": "auth.logout",
+      "method": "DELETE",
+      "path": "/auth/logout",
+      "auth": false,
+      "status": 204,
+      "ok": true,
+      "durationMs": 14,
+      "body": null,
+      "error": null
+    }
+  ]
+}

@@ -1,33 +1,44 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
-import type { DimensionValue } from 'react-native';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
+import type { DimensionValue } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import BookmarkG from '@/assets/icons/bookmark_g.svg';
-import BookmarkP from '@/assets/icons/bookmark_p.svg';
-import HeartG from '@/assets/icons/heart_g.svg';
-import HeartP from '@/assets/icons/heart_p.svg';
-import { AuthorProfileCard } from '@/components/ai/author-profile-card';
-import { ProductCard } from '@/components/feed/product-card';
-import { ScreenHeader } from '@/components/social/screen-header';
-import { Palette } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
-import { FontFamily } from '@/constants/typography';
-import { getAiDetailById } from '@/features/ai/mock';
+import BookmarkG from "@/assets/icons/bookmark_g.svg";
+import BookmarkP from "@/assets/icons/bookmark_p.svg";
+import HeartG from "@/assets/icons/heart_g.svg";
+import HeartP from "@/assets/icons/heart_p.svg";
+import { AuthorProfileCard } from "@/components/ai/author-profile-card";
+import { ProductCard } from "@/components/feed/product-card";
+import { ScreenHeader } from "@/components/social/screen-header";
+import { Palette } from "@/constants/colors";
+import { Radius, Spacing } from "@/constants/spacing";
+import { FontFamily } from "@/constants/typography";
+import { useAiChatStore } from "@/features/ai/store";
 
 export default function AiDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const detail = useMemo(() => (id ? getAiDetailById(id) : undefined), [id]);
-  const [liked, setLiked] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const getDetail = useAiChatStore((s) => s.getDetail);
+  const detail = useMemo(
+    () => (id ? getDetail(id) : undefined),
+    [getDetail, id],
+  );
+  const [liked, setLiked] = useState(detail?.liked ?? false);
+  const [bookmarked, setBookmarked] = useState(detail?.bookmarked ?? false);
 
   const toggleLike = useCallback(() => setLiked((p) => !p), []);
   const toggleBookmark = useCallback(() => setBookmarked((p) => !p), []);
 
   if (!detail) {
     return (
-      <SafeAreaView edges={['top']} style={styles.safe}>
+      <SafeAreaView edges={["top"]} style={styles.safe}>
         <ScreenHeader title="상세 보기" onBack={() => router.back()} />
         <View style={styles.empty}>
           <Text style={styles.emptyText}>코디 정보를 찾을 수 없어요.</Text>
@@ -41,12 +52,19 @@ export default function AiDetailScreen() {
   const totalImages = detail.images.length;
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safe}>
+    <SafeAreaView edges={["top"]} style={styles.safe}>
       <ScreenHeader title="상세 보기" onBack={() => router.back()} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+      >
         <View style={styles.hero}>
           {heroImage ? (
-            <Image source={heroImage} style={styles.heroImage} resizeMode="cover" />
+            <Image
+              source={heroImage}
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
           ) : null}
           {heroPins.map((item) => {
             const left: DimensionValue = `${item.pin!.x * 100}%`;
@@ -79,7 +97,7 @@ export default function AiDetailScreen() {
           <View style={styles.statRow}>
             <Text style={styles.budgetLabel}>총 예산</Text>
             <Text style={styles.budgetValue}>
-              {detail.totalBudgetWon.toLocaleString('ko-KR')}원
+              {detail.totalBudgetWon.toLocaleString("ko-KR")}원
             </Text>
             <View style={styles.statRight}>
               <Pressable
@@ -87,11 +105,15 @@ export default function AiDetailScreen() {
                 hitSlop={8}
                 style={styles.statItem}
                 accessibilityRole="button"
-                accessibilityLabel={liked ? '좋아요 취소' : '좋아요'}
+                accessibilityLabel={liked ? "좋아요 취소" : "좋아요"}
               >
-                {liked ? <HeartP width={20} height={20} /> : <HeartG width={20} height={20} />}
+                {liked ? (
+                  <HeartP width={20} height={20} />
+                ) : (
+                  <HeartG width={20} height={20} />
+                )}
                 <Text style={styles.statCount}>
-                  {(detail.likes + (liked ? 1 : 0)).toLocaleString('ko-KR')}
+                  {(detail.likes + (liked ? 1 : 0)).toLocaleString("ko-KR")}
                 </Text>
               </Pressable>
               <Pressable
@@ -99,7 +121,7 @@ export default function AiDetailScreen() {
                 hitSlop={8}
                 style={styles.statItem}
                 accessibilityRole="button"
-                accessibilityLabel={bookmarked ? '북마크 취소' : '북마크'}
+                accessibilityLabel={bookmarked ? "북마크 취소" : "북마크"}
               >
                 {bookmarked ? (
                   <BookmarkP width={20} height={20} />
@@ -114,7 +136,9 @@ export default function AiDetailScreen() {
 
           <View style={styles.itemsSection}>
             <Text style={styles.sectionTitle}>구성 아이템</Text>
-            <Text style={styles.sectionCaption}>클릭하면 구매하러 갈 수 있어요.</Text>
+            <Text style={styles.sectionCaption}>
+              클릭하면 구매하러 갈 수 있어요.
+            </Text>
             <View style={styles.itemsList}>
               {detail.items.map((item) => (
                 <Pressable key={item.id} onPress={() => undefined}>
@@ -139,8 +163,8 @@ const styles = StyleSheet.create({
   },
   empty: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   emptyText: {
     fontFamily: FontFamily.regular,
@@ -148,27 +172,27 @@ const styles = StyleSheet.create({
     color: Palette.gray500,
   },
   hero: {
-    width: '100%',
+    width: "100%",
     aspectRatio: 1,
     backgroundColor: Palette.gray150,
-    position: 'relative',
-    overflow: 'hidden',
+    position: "relative",
+    overflow: "hidden",
   },
   heroImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   pin: {
-    position: 'absolute',
+    position: "absolute",
     width: 28,
     height: 28,
     marginLeft: -14,
     marginTop: -14,
     borderRadius: 14,
     backgroundColor: Palette.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
@@ -181,13 +205,13 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.pink500,
   },
   indicator: {
-    position: 'absolute',
+    position: "absolute",
     right: Spacing.base,
     bottom: Spacing.base,
     paddingHorizontal: Spacing.md,
     paddingVertical: 4,
     borderRadius: Radius.pill,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: "rgba(0,0,0,0.55)",
   },
   indicatorText: {
     fontFamily: FontFamily.semibold,
@@ -211,8 +235,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   hashtagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: Spacing.sm,
   },
   hashtag: {
@@ -221,8 +245,8 @@ const styles = StyleSheet.create({
     color: Palette.pink500,
   },
   statRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: Spacing.sm,
   },
   budgetLabel: {
@@ -236,14 +260,14 @@ const styles = StyleSheet.create({
     color: Palette.textPrimary,
   },
   statRight: {
-    marginLeft: 'auto',
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginLeft: "auto",
+    flexDirection: "row",
+    alignItems: "center",
     gap: Spacing.base,
   },
   statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   statCount: {

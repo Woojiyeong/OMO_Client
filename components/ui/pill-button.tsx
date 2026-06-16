@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -14,11 +14,12 @@ type Props = {
   active: boolean;
   onPress?: () => void;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function PillButton({ children, active, onPress, loading }: Props) {
+export function PillButton({ children, active, onPress, loading, style }: Props) {
   const scale = useSharedValue(1);
   const disabled = !active || loading;
 
@@ -42,6 +43,7 @@ export function PillButton({ children, active, onPress, loading }: Props) {
         active ? styles.active : styles.inactive,
         loading && styles.loading,
         animatedStyle,
+        style,
       ]}
     >
       {loading ? (

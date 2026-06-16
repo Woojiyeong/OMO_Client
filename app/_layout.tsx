@@ -74,6 +74,10 @@ export default function RootLayout() {
           options={{ headerShown: false, presentation: 'card' }}
         />
         <Stack.Screen
+          name="product-detail"
+          options={{ headerShown: false, presentation: 'card' }}
+        />
+        <Stack.Screen
           name="ai-loading"
           options={{ headerShown: false, presentation: 'card', gestureEnabled: false }}
         />

@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Palette } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
@@ -13,8 +14,27 @@ type Props = {
 };
 
 export function ProductCard({ product, width = PRODUCT_CARD_WIDTH }: Props) {
+  const detailId = product.detailId ?? product.id;
+  const canOpenDetail = !!product.detailId;
+  const canOpenExternal = !!product.productUrl;
+  const canPress = canOpenDetail || canOpenExternal;
+
   return (
-    <View style={[styles.card, { width }]}>
+    <Pressable
+      onPress={() => {
+        if (canOpenDetail) {
+          router.push(`/product-detail?id=${encodeURIComponent(detailId)}` as never);
+          return;
+        }
+        if (product.productUrl) {
+          Linking.openURL(product.productUrl).catch(() => undefined);
+        }
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={`${product.name} 상품 상세 보기`}
+      disabled={!canPress}
+      style={[styles.card, { width }]}
+    >
       <View style={styles.imageBox}>
         {product.thumbnail ? (
           <Image source={product.thumbnail} style={styles.image} resizeMode="cover" />
@@ -29,7 +49,7 @@ export function ProductCard({ product, width = PRODUCT_CARD_WIDTH }: Props) {
         </Text>
       </View>
       <Text style={styles.price}>{product.priceWon.toLocaleString('ko-KR')}원</Text>
-    </View>
+    </Pressable>
   );
 }
 

@@ -16,10 +16,10 @@ export const profileEditSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, '이름을 입력해주세요.')
-    .max(16, '16자 이하로 입력해주세요.'),
-  heightCm: numericString('키', 50, 250),
-  weightKg: numericString('몸무게', 20, 250),
+    .min(2, '2자 이상 입력해주세요.')
+    .max(20, '20자 이하로 입력해주세요.'),
+  heightCm: numericString('키', 100, 250),
+  weightKg: numericString('몸무게', 20, 300),
   bio: z.string().max(60, '60자 이하로 입력해주세요.'),
 });
 

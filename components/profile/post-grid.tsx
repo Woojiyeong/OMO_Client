@@ -17,9 +17,10 @@ type Props = {
   posts: FeedPost[];
   source?: 'my' | 'saved' | 'user';
   userName?: string;
+  onEndReached?: () => void;
 };
 
-export function PostGrid({ posts, source, userName }: Props) {
+export function PostGrid({ posts, source, userName, onEndReached }: Props) {
   const { width } = useWindowDimensions();
   const cellSize = Math.floor((width - GAP * (COLUMNS - 1)) / COLUMNS);
 
@@ -51,6 +52,8 @@ export function PostGrid({ posts, source, userName }: Props) {
       ItemSeparatorComponent={() => <View style={{ height: GAP }} />}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.7}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 import { Palette } from '@/constants/colors';
@@ -11,6 +11,10 @@ type Props = {
 export function Avatar({ uri, size = 80 }: Props) {
   const [failed, setFailed] = useState(false);
   const dim = { width: size, height: size, borderRadius: size / 2 };
+
+  useEffect(() => {
+    setFailed(false);
+  }, [uri]);
 
   if (!uri || failed) {
     return <View style={[styles.placeholder, dim]} />;

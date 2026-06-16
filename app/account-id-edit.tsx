@@ -17,19 +17,19 @@ import Svg, { Path } from 'react-native-svg';
 
 import { Button } from '@/components/ui/button';
 import { ErrorText } from '@/components/ui/error-text';
+import { PasswordField } from '@/components/ui/password-field';
 import { PillButton } from '@/components/ui/pill-button';
 import { TextField } from '@/components/ui/text-field';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
-import { checkAccountIdAvailable } from '@/features/auth/api';
+import { changeLoginId, checkAccountIdAvailable } from '@/features/auth/api';
 import { accountIdSchema, type AccountIdForm } from '@/features/auth/schema';
 import { useAuthStore } from '@/features/auth/store';
 
 export default function AccountIdEditScreen() {
   const navigation = useNavigation();
   const currentId = useAuthStore((s) => s.currentId);
-  const setCredentials = useAuthStore((s) => s.setCredentials);
 
   const {
     control,
@@ -39,16 +39,22 @@ export default function AccountIdEditScreen() {
   } = useForm<AccountIdForm>({
     resolver: zodResolver(accountIdSchema),
     mode: 'onChange',
-    defaultValues: { username: currentId },
+    defaultValues: { username: currentId, currentPassword: '' },
   });
 
   const username = watch('username');
+  const currentPassword = watch('currentPassword');
   const [checking, setChecking] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const savingRef = useRef(false);
 
   useEffect(() => {
     setAvailable(null);
+    setCheckError(null);
+    setSubmitError(null);
   }, [username]);
 
   useEffect(() => {
@@ -77,20 +83,37 @@ export default function AccountIdEditScreen() {
     try {
       const res = await checkAccountIdAvailable(username);
       setAvailable(res.available);
+    } catch (e) {
+      setCheckError(e instanceof Error ? e.message : '아이디 확인에 실패했어요.');
     } finally {
       setChecking(false);
     }
   });
 
-  const onSubmit = handleSubmit(({ username }) => {
-    setCredentials({ currentId: username });
-    savingRef.current = true;
-    router.back();
+  const onSubmit = handleSubmit(async ({ username, currentPassword }) => {
+    setSaving(true);
+    setSubmitError(null);
+    try {
+      await changeLoginId({ newLoginId: username, currentPassword });
+      savingRef.current = true;
+      router.replace('/(onboarding)/login');
+    } catch (e) {
+      setSubmitError(e instanceof Error ? e.message : '아이디 변경에 실패했어요.');
+    } finally {
+      setSaving(false);
+    }
   });
 
   const fieldError =
-    errors.username?.message ?? (available === false ? '이미 사용중인 아이디예요.' : undefined);
-  const canSave = available === true && isValid && isDirty;
+    errors.username?.message ??
+    checkError ??
+    (available === false ? '이미 사용중인 아이디예요.' : undefined);
+  const canSave =
+    available === true &&
+    isValid &&
+    isDirty &&
+    currentPassword.length > 0 &&
+    !saving;
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
@@ -153,10 +176,27 @@ export default function AccountIdEditScreen() {
               <ErrorText iconName="checkmark-circle">사용 가능한 아이디예요.</ErrorText>
             )}
           </View>
+
+          <Controller
+            control={control}
+            name="currentPassword"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <PasswordField
+                label="현재 비밀번호"
+                placeholder="현재 비밀번호를 입력해 주세요."
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.currentPassword?.message}
+              />
+            )}
+          />
+
+          {submitError ? <ErrorText>{submitError}</ErrorText> : null}
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button onPress={onSubmit} disabled={!canSave}>
+          <Button onPress={onSubmit} disabled={!canSave} loading={saving}>
             저장
           </Button>
         </View>

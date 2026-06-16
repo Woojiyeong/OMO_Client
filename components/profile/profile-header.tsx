@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from '@/components/profile/avatar';
 import { KeywordAvatar } from '@/components/profile/keyword-avatar';
 import { ProfileStats } from '@/components/profile/profile-stats';
 import { Palette } from '@/constants/colors';
@@ -15,13 +16,18 @@ export function ProfileHeader() {
   const weightKg = useProfileStore((s) => s.weightKg);
   const bio = useProfileStore((s) => s.bio);
   const stats = useProfileStore((s) => s.stats);
+  const avatarUri = useProfileStore((s) => s.avatarUri);
 
   const nickname = formatNickname(keyword, name);
 
   return (
     <View>
       <View style={styles.topRow}>
-        <KeywordAvatar keyword={keyword} seed={name} size={80} />
+        {avatarUri ? (
+          <Avatar uri={avatarUri} size={80} />
+        ) : (
+          <KeywordAvatar keyword={keyword} seed={name} size={80} />
+        )}
         <ProfileStats
           posts={stats.posts}
           following={stats.following}

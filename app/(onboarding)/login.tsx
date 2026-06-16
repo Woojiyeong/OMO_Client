@@ -23,7 +23,7 @@ import { TextField } from '@/components/ui/text-field';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
-import { mockLogin } from '@/features/auth/api';
+import { login } from '@/features/auth/api';
 import { loginSchema, type LoginForm } from '@/features/auth/schema';
 
 const LOGO_TOP_FROM_SCREEN = 190;
@@ -55,7 +55,7 @@ export default function LoginScreen() {
     setSubmitError(null);
     setLoading(true);
     try {
-      await mockLogin(values);
+      await login(values);
       router.replace('/(tabs)');
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : '로그인에 실패했어요.');

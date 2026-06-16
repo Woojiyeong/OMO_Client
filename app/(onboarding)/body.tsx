@@ -8,6 +8,7 @@ import { OnboardingScreen } from '@/components/ui/onboarding-screen';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
+import { ApiError } from '@/features/api/client';
 import { signUp } from '@/features/onboarding/api';
 import { useOnboardingStore } from '@/features/onboarding/store';
 
@@ -49,11 +50,19 @@ export default function BodyScreen() {
         height,
         weight,
       });
-      markOnboarded();
       reset();
+      markOnboarded();
       router.replace('/(tabs)');
     } catch (e) {
-      console.warn('signup failed', e);
+      if (e instanceof ApiError) {
+        console.warn('signup failed', {
+          status: e.status,
+          message: e.message,
+          body: e.body,
+        });
+      } else {
+        console.warn('signup failed', e);
+      }
     } finally {
       setSubmitting(false);
     }

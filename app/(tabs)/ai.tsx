@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -9,31 +9,43 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path } from 'react-native-svg';
+} from "react-native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import Svg, { Path } from "react-native-svg";
 
-import { TabHeader } from '@/components/ui/tab-header';
-import { Palette } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
-import { FontFamily } from '@/constants/typography';
+import { HangerAnimation } from "@/components/ai/hanger-animation";
+import { TabHeader } from "@/components/ui/tab-header";
+import { Palette } from "@/constants/colors";
+import { Radius, Spacing } from "@/constants/spacing";
+import { FontFamily } from "@/constants/typography";
+import { useAiChatStore } from "@/features/ai/store";
 
-const PLACEHOLDER = '친구 만나러가는데 꾸안꾸 추천해줘';
+const PLACEHOLDER = "친구 만나러가는데 꾸안꾸 추천해줘";
 const HEADLINE_TOP_FROM_SCREEN = 200;
 const TAB_HEADER_HEIGHT = 56;
+const MIN_LOADING_MS = 2700;
 
 export default function AiScreen() {
   const insets = useSafeAreaInsets();
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [kbVisible, setKbVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const requestRecommendations = useAiChatStore(
+    (s) => s.requestRecommendations,
+  );
   const headlineMarginTop = Math.max(
     HEADLINE_TOP_FROM_SCREEN - insets.top - TAB_HEADER_HEIGHT,
     0,
   );
 
   useEffect(() => {
-    const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showEvt =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvt =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
     const showSub = Keyboard.addListener(showEvt, () => setKbVisible(true));
     const hideSub = Keyboard.addListener(hideEvt, () => setKbVisible(false));
     return () => {
@@ -42,24 +54,54 @@ export default function AiScreen() {
     };
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!trimmed || submitting) return;
     Keyboard.dismiss();
-    router.push({ pathname: '/ai-loading', params: { query: trimmed } });
+    setValue("");
+    setSubmitting(true);
+
+    const startedAt = Date.now();
+    try {
+      await requestRecommendations(trimmed);
+    } catch {
+      // The result screen reads the store error and renders retry UI.
+    } finally {
+      const delay = Math.max(MIN_LOADING_MS - (Date.now() - startedAt), 0);
+      setTimeout(() => {
+        setSubmitting(false);
+        router.push({ pathname: "/ai-results", params: { query: trimmed } });
+      }, delay);
+    }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.safeArea}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <SafeAreaView edges={['top']} style={styles.flex}>
+      <SafeAreaView edges={["top"]} style={styles.flex}>
         <TabHeader title="오모" />
         <View style={styles.body}>
           <View style={[styles.headline, { marginTop: headlineMarginTop }]}>
-            <Text style={styles.main}>오늘은 어떤 하루인가요?</Text>
-            <Text style={styles.sub}>상황을 입력하면 오모가 추천해드려요!</Text>
+            {submitting ? (
+              <>
+                <HangerAnimation size={72} shapeHeightScale={0.82} />
+                <Text style={[styles.main, styles.loadingMain]}>
+                  딱 어울리는 코디를 만들고 있어요
+                </Text>
+                <Text style={styles.loadingSub}>
+                  오모가 상황을 분석 중이에요..
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.main}>오늘은 어떤 하루인가요?</Text>
+                <Text style={styles.sub}>
+                  상황을 입력하면 오모가 추천해드려요!
+                </Text>
+              </>
+            )}
           </View>
 
           <View
@@ -77,14 +119,19 @@ export default function AiScreen() {
                 style={styles.input}
                 returnKeyType="send"
                 onSubmitEditing={handleSubmit}
+                editable={!submitting}
               />
               <Pressable
                 onPress={handleSubmit}
                 hitSlop={8}
-                disabled={!value.trim()}
-                style={[styles.sendBtn, !value.trim() && styles.sendBtnDisabled]}
+                disabled={!value.trim() || submitting}
+                style={[
+                  styles.sendBtn,
+                  (!value.trim() || submitting) && styles.sendBtnDisabled,
+                ]}
                 accessibilityRole="button"
                 accessibilityLabel="추천 요청 보내기"
+                accessibilityState={{ disabled: !value.trim() || submitting }}
               >
                 <ArrowUp />
               </Pressable>
@@ -125,28 +172,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
   headline: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   main: {
     fontFamily: FontFamily.bold,
     fontSize: 24,
     color: Palette.textPrimary,
     lineHeight: 32,
-    textAlign: 'center',
+    textAlign: "center",
   },
   sub: {
     marginTop: Spacing.sm,
     fontFamily: FontFamily.regular,
     fontSize: 14,
     color: Palette.pink500,
-    textAlign: 'center',
+    textAlign: "center",
+  },
+  loadingMain: {
+    marginTop: Spacing.xl,
+    fontSize: 16,
+    lineHeight: 24,
+    color: Palette.pink500,
+  },
+  loadingSub: {
+    marginTop: Spacing.sm,
+    fontFamily: FontFamily.regular,
+    fontSize: 13,
+    lineHeight: 18,
+    color: Palette.gray400,
+    textAlign: "center",
   },
   inputWrap: {
-    marginTop: 'auto',
+    marginTop: "auto",
   },
   inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 52,
     borderWidth: 1,
     borderColor: Palette.gray150,
@@ -162,18 +223,18 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: Palette.black,
     paddingTop: 0,
-    paddingBottom: Platform.OS === 'ios' ? 2 : 0,
+    paddingBottom: Platform.OS === "ios" ? 2 : 0,
     margin: 0,
     includeFontPadding: false,
-    textAlignVertical: 'center',
+    textAlignVertical: "center",
   },
   sendBtn: {
     width: SEND_SIZE,
     height: SEND_SIZE,
     borderRadius: SEND_SIZE / 2,
     backgroundColor: Palette.pink500,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: Spacing.sm,
   },
   sendBtnDisabled: {

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -18,9 +19,11 @@ import HeartP from '@/assets/icons/heart_p.svg';
 import More from '@/assets/icons/more.svg';
 import { KeywordAvatar } from '@/components/profile/keyword-avatar';
 import { FollowButton } from '@/components/social/follow-button';
+import { ReportSheet, type ReportReason } from '@/components/social/report-sheet';
 import { Palette } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
+import { reportPost, togglePostBookmark, togglePostLike } from '@/features/feed/api';
 import { STYLE_OPTIONS } from '@/features/onboarding/styles';
 import { useSocialStore } from '@/features/social/store';
 import type { FeedPost } from '@/features/feed/types';
@@ -46,10 +49,13 @@ type Props = {
 
 export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) {
   const { width } = useWindowDimensions();
-  const [liked, setLiked] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [liked, setLiked] = useState(post.liked ?? false);
+  const [bookmarked, setBookmarked] = useState(post.bookmarked ?? false);
   const [moreSheetVisible, setMoreSheetVisible] = useState(false);
   const [productsSheetVisible, setProductsSheetVisible] = useState(false);
+  const [reportSheetVisible, setReportSheetVisible] = useState(false);
+  const [reporting, setReporting] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
   const authorId = post.author.id;
   const following = useSocialStore((s) => s.following.some((u) => u.id === authorId));
@@ -67,6 +73,10 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
 
   const isSelf = authorId === 'me';
 
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [post.author.avatarUri]);
+
   const handleToggleFollow = () => {
     if (following) {
       unfollowAction(post.author.id).catch(() => {});
@@ -79,6 +89,48 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
         bio: '',
       }).catch(() => {});
     }
+  };
+
+  const handleToggleLike = () => {
+    setLiked((v) => !v);
+    togglePostLike(post.id)
+      .then(({ liked: nextLiked }) => setLiked(nextLiked))
+      .catch(() => setLiked((v) => !v));
+  };
+
+  const handleToggleBookmark = () => {
+    setBookmarked((v) => !v);
+    togglePostBookmark(post.id)
+      .then(({ bookmarked: nextBookmarked }) => setBookmarked(nextBookmarked))
+      .catch(() => setBookmarked((v) => !v));
+  };
+
+  const handleMoreConfirm = () => {
+    setMoreSheetVisible(false);
+    if (moreVariant === 'report') {
+      setReportSheetVisible(true);
+      return;
+    }
+    onMoreAction?.(post);
+  };
+
+  const handleReport = (payload: {
+    reason: ReportReason;
+    description?: string;
+  }) => {
+    setReporting(true);
+    reportPost(post.id, payload)
+      .then(() => {
+        setReportSheetVisible(false);
+        Alert.alert('신고 완료', '게시글 신고가 접수되었어요.');
+      })
+      .catch((error) => {
+        Alert.alert(
+          '신고 실패',
+          error instanceof Error ? error.message : '게시글을 신고하지 못했어요.',
+        );
+      })
+      .finally(() => setReporting(false));
   };
 
   return (
@@ -104,7 +156,16 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
           hitSlop={4}
         >
           <View style={styles.avatar}>
-            <KeywordAvatar keyword={post.author.keyword} seed={post.author.id} size={36} />
+            {post.author.avatarUri && !avatarFailed ? (
+              <Image
+                source={{ uri: post.author.avatarUri }}
+                style={styles.avatarImage}
+                resizeMode="cover"
+                onError={() => setAvatarFailed(true)}
+              />
+            ) : (
+              <KeywordAvatar keyword={post.author.keyword} seed={post.author.id} size={36} />
+            )}
           </View>
           <Text style={styles.handle} numberOfLines={1}>
             {handle}
@@ -140,7 +201,7 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
       <View style={styles.actionRow}>
         <Pressable
           style={styles.likeWrap}
-          onPress={() => setLiked((v) => !v)}
+          onPress={handleToggleLike}
           accessibilityRole="button"
           accessibilityLabel={liked ? '좋아요 취소' : '좋아요'}
           hitSlop={8}
@@ -149,7 +210,7 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
           <Text style={styles.likeCount}>{likeCount.toLocaleString('ko-KR')}</Text>
         </Pressable>
         <Pressable
-          onPress={() => setBookmarked((v) => !v)}
+          onPress={handleToggleBookmark}
           accessibilityRole="button"
           accessibilityLabel={bookmarked ? '북마크 취소' : '북마크'}
           hitSlop={8}
@@ -212,16 +273,21 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
         visible={moreSheetVisible}
         variant={moreVariant}
         onClose={() => setMoreSheetVisible(false)}
-        onConfirm={() => {
-          setMoreSheetVisible(false);
-          onMoreAction?.(post);
-        }}
+        onConfirm={handleMoreConfirm}
       />
 
       <ProductsSheet
         visible={productsSheetVisible}
         products={post.products}
         onClose={() => setProductsSheetVisible(false)}
+      />
+
+      <ReportSheet
+        visible={reportSheetVisible}
+        title="게시글 신고"
+        submitting={reporting}
+        onClose={() => setReportSheetVisible(false)}
+        onSubmit={handleReport}
       />
     </View>
   );
@@ -244,7 +310,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    overflow: 'hidden',
     marginRight: Spacing.md,
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: Palette.gray150,
   },
   handle: {
     flex: 1,

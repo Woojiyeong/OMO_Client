@@ -32,10 +32,12 @@ export default function UsernameScreen() {
   const username = watch('username');
   const [checking, setChecking] = useState(false);
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
 
   // 입력값 바뀌면 검증 결과 무효화
   useEffect(() => {
     setAvailable(null);
+    setCheckError(null);
   }, [username]);
 
   const onCheck = handleSubmit(async ({ username }) => {
@@ -43,6 +45,8 @@ export default function UsernameScreen() {
     try {
       const res = await checkUsername(username);
       setAvailable(res.available);
+    } catch (e) {
+      setCheckError(e instanceof Error ? e.message : '아이디 확인에 실패했어요.');
     } finally {
       setChecking(false);
     }
@@ -54,7 +58,9 @@ export default function UsernameScreen() {
   };
 
   const fieldError =
-    errors.username?.message ?? (available === false ? '이미 사용중인 아이디예요.' : undefined);
+    errors.username?.message ??
+    checkError ??
+    (available === false ? '이미 사용중인 아이디예요.' : undefined);
   const canProceed = available === true && !errors.username;
 
   return (

@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Pressable,
@@ -25,10 +25,14 @@ import { UploadImageArea } from '@/components/upload/upload-image-area';
 import { TabHeader } from '@/components/ui/tab-header';
 import { Palette } from '@/constants/colors';
 import { FontFamily } from '@/constants/typography';
+import {
+  createPost,
+  triggerPostDetection,
+  waitForDetectedPost,
+} from '@/features/feed/api';
 import { useMyPostsStore } from '@/features/feed/store';
-import type { FeedPost } from '@/features/feed/types';
 import { useProfileStore } from '@/features/profile/store';
-import { MOCK_UPLOAD_PRODUCTS } from '@/features/upload/mock';
+import { searchImageProducts } from '@/features/upload/api';
 import {
   MAX_SELECTIONS,
   SITUATION_OPTIONS,
@@ -43,9 +47,17 @@ import type {
 } from '@/features/upload/types';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
+type PickedImage = {
+  uri: string;
+  name?: string;
+  type?: string;
+  size?: number;
+};
 
 export default function UploadScreen() {
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [image, setImage] = useState<PickedImage | null>(null);
   const [status, setStatus] = useState<UploadStatus>('idle');
   const [products, setProducts] = useState<UploadProduct[]>([]);
   const [editTargetId, setEditTargetId] = useState<string | null>(null);
@@ -53,10 +65,10 @@ export default function UploadScreen() {
   const [styleSel, setStyleSel] = useState<StyleOption[]>([]);
   const [situationSel, setSituationSel] = useState<SituationOption[]>([]);
   const [atBottom, setAtBottom] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const addPost = useMyPostsStore((s) => s.addPost);
   const profileName = useProfileStore((s) => s.name);
   const profileKeyword = useProfileStore((s) => s.keyword);
-  const analyzeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<ScrollView>(null);
 
   const ctaScale = useSharedValue(1);
@@ -89,20 +101,39 @@ export default function UploadScreen() {
       aspect: [3, 4],
     });
     if (result.canceled || !result.assets?.[0]) return;
-    setImageUri(result.assets[0].uri);
+    const asset = result.assets[0];
+    if (asset.fileSize && asset.fileSize > MAX_IMAGE_BYTES) {
+      Alert.alert('이미지 용량 초과', '10MB 이하의 이미지만 업로드할 수 있어요.');
+      return;
+    }
+    setImage({
+      uri: asset.uri,
+      name: asset.fileName ?? 'upload.jpg',
+      type: asset.mimeType ?? 'image/jpeg',
+      size: asset.fileSize,
+    });
     setStatus('picked');
     setProducts([]);
   };
 
-  const handleAnalyze = () => {
-    if (status !== 'picked') return;
+  const handleAnalyze = async () => {
+    if (status !== 'picked' || !image) return;
+    if (image.size && image.size > MAX_IMAGE_BYTES) {
+      Alert.alert('이미지 용량 초과', '10MB 이하의 이미지만 업로드할 수 있어요.');
+      return;
+    }
     setStatus('analyzing');
     scrollRef.current?.scrollTo({ y: 0, animated: true });
-    if (analyzeTimer.current) clearTimeout(analyzeTimer.current);
-    analyzeTimer.current = setTimeout(() => {
-      setProducts(MOCK_UPLOAD_PRODUCTS);
+    try {
+      setProducts(await searchImageProducts(image));
       setStatus('completed');
-    }, 2000);
+    } catch (error) {
+      setStatus('picked');
+      Alert.alert(
+        '분석 실패',
+        error instanceof Error ? error.message : '이미지를 분석하지 못했어요.',
+      );
+    }
   };
 
   const handlePinPress = (productId: string) => {
@@ -128,11 +159,7 @@ export default function UploadScreen() {
   };
 
   const resetUpload = () => {
-    if (analyzeTimer.current) {
-      clearTimeout(analyzeTimer.current);
-      analyzeTimer.current = null;
-    }
-    setImageUri(null);
+    setImage(null);
     setStatus('idle');
     setProducts([]);
     setEditTargetId(null);
@@ -143,44 +170,49 @@ export default function UploadScreen() {
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
-  const handlePublish = () => {
-    if (!imageUri) return;
+  const handlePublish = async () => {
+    if (!image || publishing) return;
     const trimmed = description.trim();
-    const newPost: FeedPost = {
-      id: `my-${Date.now()}`,
-      author: {
-        id: 'me',
-        name: profileName,
-        keyword: profileKeyword,
-      },
-      image: { uri: imageUri },
-      likes: 0,
-      title: trimmed.slice(0, 24) || '내 코디',
-      description: trimmed,
-      hashtags: [...styleSel, ...situationSel],
-      products: products.map(({ pin: _pin, link: _link, ...rest }) => rest),
-    };
-    addPost(newPost);
-    Alert.alert('게시 완료', '상품 핀이 포함된 코디가 게시되었어요.', [
-      { text: '확인', onPress: resetUpload },
-    ]);
+    setPublishing(true);
+    try {
+      const post = await createPost({
+        title: trimmed.slice(0, 24) || '내 코디',
+        description: trimmed,
+        hashtags: [...styleSel, ...situationSel],
+        images: [image],
+      });
+      await triggerPostDetection(post.id);
+      const detectedPost = await waitForDetectedPost(post.id);
+      addPost({
+        ...detectedPost,
+        author: {
+          ...detectedPost.author,
+          name: detectedPost.author.name || profileName,
+          keyword: detectedPost.author.keyword || profileKeyword,
+        },
+      });
+      Alert.alert('게시 완료', '코디가 게시되었어요.', [
+        { text: '확인', onPress: resetUpload },
+      ]);
+    } catch (error) {
+      Alert.alert(
+        '게시 실패',
+        error instanceof Error ? error.message : '게시글을 올리지 못했어요.',
+      );
+    } finally {
+      setPublishing(false);
+    }
   };
 
-  useEffect(() => {
-    return () => {
-      if (analyzeTimer.current) clearTimeout(analyzeTimer.current);
-    };
-  }, []);
-
   const isFormComplete =
-    imageUri !== null &&
+    image !== null &&
     description.trim().length > 0 &&
     styleSel.length > 0 &&
     situationSel.length > 0;
 
   const ctaAnalyzing = status === 'analyzing';
   const ctaActive = status === 'picked' && isFormComplete;
-  const canPublish = status === 'completed' && products.length > 0;
+  const canPublish = status === 'completed' && image !== null && !publishing;
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -201,7 +233,7 @@ export default function UploadScreen() {
         scrollEventThrottle={32}
       >
         <UploadImageArea
-          imageUri={imageUri}
+          imageUri={image?.uri ?? null}
           status={status}
           pins={products}
           onPickImage={handlePickImage}
@@ -306,14 +338,17 @@ export default function UploadScreen() {
                 publishScale.value = withTiming(1, { duration: 120 });
               }}
               accessibilityRole="button"
-              accessibilityLabel="게시하기"
+              accessibilityLabel={publishing ? '게시 중' : '게시하기'}
+              accessibilityState={{ disabled: !canPublish, busy: publishing }}
               style={[
                 styles.publish,
                 !canPublish && styles.publishDisabled,
                 publishStyle,
               ]}
             >
-              <Text style={styles.publishText}>게시하기</Text>
+              <Text style={styles.publishText}>
+                {publishing ? '게시 중' : '게시하기'}
+              </Text>
             </AnimatedPressable>
           </View>
         )}

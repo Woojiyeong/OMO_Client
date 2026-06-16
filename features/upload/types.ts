@@ -3,6 +3,8 @@ import type { ProductRecommendation } from '@/features/feed/types';
 export type UploadStatus = 'idle' | 'picked' | 'analyzing' | 'completed';
 
 export type UploadProduct = ProductRecommendation & {
+  detectedProductId?: string;
+  productId?: string;
   pin: { x: number; y: number };
   link?: string;
 };

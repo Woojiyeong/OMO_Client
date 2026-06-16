@@ -11,10 +11,12 @@ export type FeedAuthor = {
 
 export type ProductRecommendation = {
   id: string;
+  detailId?: string;
   category: string;
   name: string;
   priceWon: number;
   thumbnail: ImageSourcePropType;
+  productUrl?: string;
 };
 
 export type FeedPost = {
@@ -26,6 +28,8 @@ export type FeedPost = {
   description: string;
   hashtags: string[];
   products: ProductRecommendation[];
+  liked?: boolean;
+  bookmarked?: boolean;
 };
 
 export type TrendItem = {

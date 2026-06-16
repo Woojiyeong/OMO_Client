@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from '@/components/profile/avatar';
 import { KeywordAvatar } from '@/components/profile/keyword-avatar';
 import { FollowButton } from '@/components/social/follow-button';
 import { Palette } from '@/constants/colors';
@@ -30,7 +31,11 @@ export function UserListItem({
       accessibilityRole="button"
       accessibilityLabel={`${formatNickname(user.keyword, user.name)} 프로필 보기`}
     >
-      <KeywordAvatar keyword={user.keyword} seed={user.id} size={48} />
+      {user.avatarUri ? (
+        <Avatar uri={user.avatarUri} size={48} />
+      ) : (
+        <KeywordAvatar keyword={user.keyword} seed={user.id} size={48} />
+      )}
       <View style={styles.text}>
         <Text style={styles.name} numberOfLines={1}>
           {formatNickname(user.keyword, user.name)}

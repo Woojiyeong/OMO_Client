@@ -9,11 +9,12 @@ import { ScreenHeader } from '@/components/social/screen-header';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import {
-  getPostsByUser,
-  MOCK_MY_POSTS,
-  MOCK_SAVED_POSTS,
-  RANKED_FEED_POSTS,
-} from '@/features/feed/mock';
+  deletePost,
+  fetchPost,
+  fetchPostsPage,
+  removeMyBookmark,
+} from '@/features/feed/api';
+import { MOCK_MY_POSTS } from '@/features/feed/mock';
 import { useMyPostsStore } from '@/features/feed/store';
 import type { FeedPost } from '@/features/feed/types';
 
@@ -34,7 +35,7 @@ const SOURCE_VARIANT: Record<Source, PostMoreVariant> = {
 };
 
 export default function PostDetailScreen() {
-  const { id, source: rawSource, name } = useLocalSearchParams<{
+  const { id, source: rawSource } = useLocalSearchParams<{
     id?: string;
     source?: string;
     name?: string;
@@ -45,13 +46,14 @@ export default function PostDetailScreen() {
       : 'trend';
 
   const uploaded = useMyPostsStore((s) => s.uploaded);
+  const [remotePosts, setRemotePosts] = useState<FeedPost[]>([]);
+  const [trendNextCursor, setTrendNextCursor] = useState<string | null>(null);
+  const [loadingMoreTrend, setLoadingMoreTrend] = useState(false);
 
   const basePosts = useMemo<FeedPost[]>(() => {
     if (source === 'my') return [...uploaded, ...MOCK_MY_POSTS];
-    if (source === 'saved') return MOCK_SAVED_POSTS;
-    if (source === 'user') return getPostsByUser('', name);
-    return RANKED_FEED_POSTS;
-  }, [source, name, uploaded]);
+    return remotePosts;
+  }, [source, uploaded, remotePosts]);
   const [removedIds, setRemovedIds] = useState<Set<string>>(() => new Set());
   const posts = useMemo(
     () => basePosts.filter((p) => !removedIds.has(p.id)),
@@ -78,8 +80,58 @@ export default function PostDetailScreen() {
   }, [initialIndex]);
 
   useEffect(() => {
-    if (posts.length === 0) router.back();
-  }, [posts.length]);
+    if (!id || source === 'my') return;
+    let cancelled = false;
+
+    if (source === 'trend') {
+      Promise.all([
+        fetchPost(id),
+        fetchPostsPage({ sort: 'trending' }),
+      ])
+        .then(([focusedPost, page]) => {
+          if (cancelled) return;
+          const hasFocusedPost = page.posts.some((post) => post.id === focusedPost.id);
+          setRemotePosts(hasFocusedPost ? page.posts : [focusedPost, ...page.posts]);
+          setTrendNextCursor(page.nextCursor);
+        })
+        .catch(() => {
+          if (!cancelled) router.back();
+        });
+    } else {
+      fetchPost(id)
+        .then((post) => {
+          if (!cancelled) setRemotePosts([post]);
+        })
+        .catch(() => {
+          if (!cancelled) router.back();
+        });
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, source]);
+
+  const loadMoreTrendPosts = useCallback(async () => {
+    if (source !== 'trend' || !trendNextCursor || loadingMoreTrend) return;
+    setLoadingMoreTrend(true);
+    try {
+      const page = await fetchPostsPage({
+        sort: 'trending',
+        cursor: trendNextCursor,
+      });
+      setRemotePosts((prev) => {
+        const seen = new Set(prev.map((post) => post.id));
+        return [
+          ...prev,
+          ...page.posts.filter((post) => !seen.has(post.id)),
+        ];
+      });
+      setTrendNextCursor(page.nextCursor);
+    } finally {
+      setLoadingMoreTrend(false);
+    }
+  }, [loadingMoreTrend, source, trendNextCursor]);
 
   const handleRemove = useCallback((post: FeedPost) => {
     setRemovedIds((prev) => {
@@ -87,7 +139,20 @@ export default function PostDetailScreen() {
       next.add(post.id);
       return next;
     });
-  }, []);
+    const request =
+      source === 'my'
+        ? deletePost(post.id)
+        : source === 'saved'
+          ? removeMyBookmark(post.id)
+          : Promise.resolve();
+    request.catch(() => {
+      setRemovedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(post.id);
+        return next;
+      });
+    });
+  }, [source]);
 
   const variant = SOURCE_VARIANT[source];
   const onMoreAction = source === 'trend' ? undefined : handleRemove;
@@ -109,6 +174,8 @@ export default function PostDetailScreen() {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        onEndReached={source === 'trend' ? loadMoreTrendPosts : undefined}
+        onEndReachedThreshold={0.7}
         onScrollToIndexFailed={(info) => {
           listRef.current?.scrollToOffset({
             offset: info.index * info.averageItemLength,

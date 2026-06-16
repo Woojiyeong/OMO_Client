@@ -10,12 +10,20 @@ import { UnfollowModal } from '@/components/social/unfollow-modal';
 import { UserListItem } from '@/components/social/user-list-item';
 import { Palette } from '@/constants/colors';
 import { formatNickname } from '@/features/profile/store';
+import {
+  fetchFollowersPageForUser,
+  fetchFollowingPageForUser,
+} from '@/features/social/api';
 import { useSocialStore } from '@/features/social/store';
 import type { FollowListType, SocialUser } from '@/features/social/types';
 
 export default function FollowListScreen() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, userId } = useLocalSearchParams<{
+    type?: string;
+    userId?: string;
+  }>();
   const listType: FollowListType = type === 'followers' ? 'followers' : 'following';
+  const isRemoteUser = !!userId;
 
   const following = useSocialStore((s) => s.following);
   const followers = useSocialStore((s) => s.followers);
@@ -24,16 +32,84 @@ export default function FollowListScreen() {
   const pendingFollowOps = useSocialStore((s) => s.pendingFollowOps);
   const loadFollowing = useSocialStore((s) => s.loadFollowing);
   const loadFollowers = useSocialStore((s) => s.loadFollowers);
+  const loadMoreFollowing = useSocialStore((s) => s.loadMoreFollowing);
+  const loadMoreFollowers = useSocialStore((s) => s.loadMoreFollowers);
   const followAction = useSocialStore((s) => s.follow);
   const unfollowAction = useSocialStore((s) => s.unfollow);
   const isFollowing = useSocialStore((s) => s.isFollowing);
 
-  const list = listType === 'following' ? following : followers;
-  const loading = listType === 'following' ? loadingFollowing : loadingFollowers;
-  const reload = listType === 'following' ? loadFollowing : loadFollowers;
-
+  const [remoteList, setRemoteList] = useState<SocialUser[]>([]);
+  const [remoteLoading, setRemoteLoading] = useState(false);
+  const [remoteCursor, setRemoteCursor] = useState<string | null>(null);
+  const [remoteHasNext, setRemoteHasNext] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [unfollowTarget, setUnfollowTarget] = useState<SocialUser | null>(null);
+
+  const list = isRemoteUser
+    ? remoteList
+    : listType === 'following'
+      ? following
+      : followers;
+  const loading = isRemoteUser
+    ? remoteLoading
+    : listType === 'following'
+      ? loadingFollowing
+      : loadingFollowers;
+  const reload = useCallback(async () => {
+    if (!isRemoteUser) {
+      const loadMine = listType === 'following' ? loadFollowing : loadFollowers;
+      await loadMine(true);
+      return;
+    }
+
+    setRemoteLoading(true);
+    try {
+      const page =
+        listType === 'following'
+          ? await fetchFollowingPageForUser({ userId })
+          : await fetchFollowersPageForUser({ userId });
+      setRemoteList(page.users);
+      setRemoteCursor(page.nextCursor);
+      setRemoteHasNext(page.hasNext);
+    } finally {
+      setRemoteLoading(false);
+    }
+  }, [isRemoteUser, listType, loadFollowers, loadFollowing, userId]);
+
+  const loadMore = useCallback(async () => {
+    if (!isRemoteUser) {
+      const loadMoreMine =
+        listType === 'following' ? loadMoreFollowing : loadMoreFollowers;
+      await loadMoreMine();
+      return;
+    }
+    if (!remoteHasNext || !remoteCursor || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const page =
+        listType === 'following'
+          ? await fetchFollowingPageForUser({ userId, cursor: remoteCursor })
+          : await fetchFollowersPageForUser({ userId, cursor: remoteCursor });
+      setRemoteList((prev) => {
+        const seen = new Set(prev.map((user) => user.id));
+        return [...prev, ...page.users.filter((user) => !seen.has(user.id))];
+      });
+      setRemoteCursor(page.nextCursor);
+      setRemoteHasNext(page.hasNext);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [
+    isRemoteUser,
+    listType,
+    loadingMore,
+    loadMoreFollowers,
+    loadMoreFollowing,
+    remoteCursor,
+    remoteHasNext,
+    userId,
+  ]);
 
   useEffect(() => {
     if (list.length === 0) {
@@ -118,6 +194,8 @@ export default function FollowListScreen() {
               onPressFollow={() => handleToggleFollow(item)}
             />
           )}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.7}
         />
       )}
 

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedProps,
   useSharedValue,
@@ -7,12 +7,12 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
-} from 'react-native-reanimated';
-import Svg, { Path } from 'react-native-svg';
+} from "react-native-reanimated";
+import Svg, { G, Path } from "react-native-svg";
 
-import { Palette } from '@/constants/colors';
+import { Palette } from "@/constants/colors";
 
-const SIZE = 96;
+const DEFAULT_SIZE = 96;
 const STROKE = Palette.pink500;
 const STROKE_WIDTH = 2;
 
@@ -61,7 +61,15 @@ const PATH_LENGTH = 100;
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-export function HangerAnimation() {
+type Props = {
+  size?: number;
+  shapeHeightScale?: number;
+};
+
+export function HangerAnimation({
+  size = DEFAULT_SIZE,
+  shapeHeightScale = 1,
+}: Props) {
   const draw = useSharedValue(0);
 
   useEffect(() => {
@@ -80,19 +88,22 @@ export function HangerAnimation() {
   }));
 
   return (
-    <View style={styles.box}>
-      <Svg width={SIZE} height={SIZE} viewBox="0 0 50 50" fill="none">
-        <AnimatedPath
-          d={HANGER_PATH}
-          stroke={STROKE}
-          strokeWidth={STROKE_WIDTH}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          pathLength={PATH_LENGTH}
-          strokeDasharray={[PATH_LENGTH, PATH_LENGTH]}
-          animatedProps={animatedProps}
-        />
+    <View style={[styles.box, { width: size, height: size }]}>
+      <Svg width={size} height={size} viewBox="0 0 50 50" fill="none">
+        <G
+          transform={`translate(0 ${25 * (1 - shapeHeightScale)}) scale(1 ${shapeHeightScale})`}
+        >
+          <AnimatedPath
+            d={HANGER_PATH}
+            stroke={STROKE}
+            strokeWidth={STROKE_WIDTH}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            strokeDasharray={[PATH_LENGTH, PATH_LENGTH]}
+            animatedProps={animatedProps}
+          />
+        </G>
       </Svg>
     </View>
   );
@@ -100,7 +111,7 @@ export function HangerAnimation() {
 
 const styles = StyleSheet.create({
   box: {
-    width: SIZE,
-    height: SIZE,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

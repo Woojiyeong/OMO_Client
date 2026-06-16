@@ -20,16 +20,14 @@ import { PasswordField } from '@/components/ui/password-field';
 import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
-import { verifyCurrentPassword } from '@/features/auth/api';
+import { changePassword } from '@/features/auth/api';
 import {
   accountPasswordSchema,
   type AccountPasswordForm,
 } from '@/features/auth/schema';
-import { useAuthStore } from '@/features/auth/store';
 
 export default function AccountPasswordEditScreen() {
   const navigation = useNavigation();
-  const setCredentials = useAuthStore((s) => s.setCredentials);
 
   const {
     control,
@@ -74,17 +72,14 @@ export default function AccountPasswordEditScreen() {
   const onSubmit = handleSubmit(async ({ currentPassword, newPassword }) => {
     setSubmitting(true);
     try {
-      const res = await verifyCurrentPassword(currentPassword);
-      if (!res.ok) {
-        setError('currentPassword', {
-          type: 'manual',
-          message: '비밀번호가 일치하지 않아요.',
-        });
-        return;
-      }
-      setCredentials({ currentPassword: newPassword });
+      await changePassword({ currentPassword, newPassword });
       savingRef.current = true;
-      router.back();
+      router.replace('/(onboarding)/login');
+    } catch (e) {
+      setError('currentPassword', {
+        type: 'manual',
+        message: e instanceof Error ? e.message : '비밀번호 확인에 실패했어요.',
+      });
     } finally {
       setSubmitting(false);
     }

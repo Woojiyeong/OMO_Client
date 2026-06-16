@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-06-16T07:17:45.311Z",
+  "apiBaseUrl": "https://omo.mirim-it-show.site/api/v1",
+  "includeMutations": false,
+  "state": {
+    "postId": null,
+    "userId": null,
+    "productId": null,
+    "detectedProductId": null,
+    "aiSessionId": null
+  },
+  "results": [
+    {
+      "name": "server.root",
+      "method": "GET",
+      "path": "/",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 77,
+      "body": "Hello OMO!!",
+      "error": null
+    },
+    {
+      "name": "auth.checkLoginId",
+      "method": "GET",
+      "path": "/auth/check-login-id?loginId=probe_1781594265205",
+      "auth": false,
+      "status": 200,
+      "ok": true,
+      "durationMs": 84,
+      "body": {
+        "available": true
+      },
+      "error": null
+    },
+    {
+      "name": "posts.list.trending",
+      "method": "GET",
+      "path": "/posts?sort=trending&limit=5",
+      "auth": false,
+      "status": 401,
+      "ok": false,
+      "durationMs": 14,
+      "body": {
+        "message": "Unauthorized",
+        "statusCode": 401
+      },
+      "error": null
+    },
+    {
+      "name": "posts.list.following",
+      "method": "GET",
+      "path": "/posts?sort=following&limit=5",
+      "auth": true,
+      "status": 401,
+      "ok": false,
+      "durationMs": 8,
+      "body": {
+        "message": "Unauthorized",
+        "statusCode": 401
+      },
+      "error": null
+    }
+  ]
+}

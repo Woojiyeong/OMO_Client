@@ -1,18 +1,23 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { StyleSheet, Text, View } from "react-native";
+import Svg, { Circle, Path } from "react-native-svg";
 
-import { Palette } from '@/constants/colors';
-import { Spacing } from '@/constants/spacing';
-import { FontFamily } from '@/constants/typography';
+import { Palette } from "@/constants/colors";
+import { Spacing } from "@/constants/spacing";
+import { FontFamily } from "@/constants/typography";
 
 type Props = {
   message: string;
+  icon?: "post" | "bookmark";
 };
 
-export function EmptyState({ message }: Props) {
+const ICON_SIZE = 44;
+const ICON_STROKE = Palette.gray300;
+const ICON_STROKE_WIDTH = 1.8;
+
+export function EmptyState({ message, icon = "post" }: Props) {
   return (
     <View style={styles.container}>
-      <CameraIcon />
+      {icon === "bookmark" ? <BookmarkIcon /> : <CameraIcon />}
       <Text style={styles.message}>{message}</Text>
     </View>
   );
@@ -20,15 +25,35 @@ export function EmptyState({ message }: Props) {
 
 function CameraIcon() {
   return (
-    <Svg width={28} height={28} viewBox="0 0 24 24" fill="none">
+    <Svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 44 44" fill="none">
       <Path
-        d="M3 8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H7L9 4H15L17 6H19C19.5304 6 20.0391 6.21071 20.4142 6.58579C20.7893 6.96086 21 7.46957 21 8V18C21 18.5304 20.7893 19.0391 20.4142 19.4142C20.0391 19.7893 19.5304 20 19 20H5C4.46957 20 3.96086 19.7893 3.58579 19.4142C3.21071 19.0391 3 18.5304 3 18V8Z"
-        stroke={Palette.textPrimary}
-        strokeWidth={1.5}
+        d="M9 16.5C9 15.3954 9.89543 14.5 11 14.5H15L17.5 12H26.5L29 14.5H33C34.1046 14.5 35 15.3954 35 16.5V31C35 32.1046 34.1046 33 33 33H11C9.89543 33 9 32.1046 9 31V16.5Z"
+        stroke={ICON_STROKE}
+        strokeWidth={ICON_STROKE_WIDTH}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <Circle cx={12} cy={13} r={3.5} stroke={Palette.textPrimary} strokeWidth={1.5} />
+      <Circle
+        cx={22}
+        cy={24}
+        r={5.5}
+        stroke={ICON_STROKE}
+        strokeWidth={ICON_STROKE_WIDTH}
+      />
+    </Svg>
+  );
+}
+
+function BookmarkIcon() {
+  return (
+    <Svg width={ICON_SIZE} height={ICON_SIZE} viewBox="0 0 44 44" fill="none">
+      <Path
+        d="M14 10H30C31.1046 10 32 10.8954 32 12V34L22 28L12 34V12C12 10.8954 12.8954 10 14 10Z"
+        stroke={ICON_STROKE}
+        strokeWidth={ICON_STROKE_WIDTH}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Svg>
   );
 }
@@ -36,14 +61,15 @@ function CameraIcon() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingBottom: 80,
-    gap: Spacing.md,
+    gap: Spacing.sm,
   },
   message: {
-    fontFamily: FontFamily.bold,
-    fontSize: 16,
-    color: Palette.textPrimary,
+    fontFamily: FontFamily.semibold,
+    fontSize: 15,
+    lineHeight: 22,
+    color: Palette.gray500,
   },
 });

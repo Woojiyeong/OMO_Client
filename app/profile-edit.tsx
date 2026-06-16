@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as ImagePicker from 'expo-image-picker';
 import { router, useNavigation } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -23,11 +25,20 @@ import { TextField } from '@/components/ui/text-field';
 import { Palette } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { FontFamily, Typography } from '@/constants/typography';
+import { updateMyProfile, uploadProfileImage } from '@/features/auth/api';
 import { useAuthStore } from '@/features/auth/store';
 import { profileEditSchema, type ProfileEditForm } from '@/features/profile/schema';
 import { useProfileStore } from '@/features/profile/store';
 
 const BIO_MAX = 60;
+const MAX_PROFILE_IMAGE_BYTES = 10 * 1024 * 1024;
+
+type PickedProfileImage = {
+  uri: string;
+  name?: string;
+  type?: string;
+  size?: number;
+};
 
 export default function ProfileEditScreen() {
   const profile = useProfileStore();
@@ -53,10 +64,13 @@ export default function ProfileEditScreen() {
   const watchedKeyword = useWatch({ control, name: 'keyword' });
 
   const savingRef = useRef(false);
+  const [selectedImage, setSelectedImage] = useState<PickedProfileImage | null>(null);
+  const imageDirty = selectedImage !== null;
+  const previewUri = selectedImage?.uri ?? profile.avatarUri;
 
   useEffect(() => {
     const unsub = navigation.addListener('beforeRemove', (e: any) => {
-      if (!isDirty || savingRef.current) return;
+      if ((!isDirty && !imageDirty) || savingRef.current) return;
       e.preventDefault();
       Alert.alert(
         '변경사항을 저장하지 않고 나갈까요?',
@@ -73,21 +87,71 @@ export default function ProfileEditScreen() {
       );
     });
     return unsub;
-  }, [navigation, isDirty]);
+  }, [navigation, isDirty, imageDirty]);
 
-  const onSubmit = handleSubmit((values) => {
-    profile.setProfile({
+  const pickProfileImage = async () => {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('권한이 필요해요', '프로필 이미지를 선택하려면 사진 접근 권한이 필요해요.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.9,
+    });
+    if (result.canceled) return;
+
+    const asset = result.assets[0];
+    if (!asset) return;
+    if (asset.fileSize && asset.fileSize > MAX_PROFILE_IMAGE_BYTES) {
+      Alert.alert('이미지 용량 초과', '10MB 이하의 이미지를 선택해주세요.');
+      return;
+    }
+
+    setSelectedImage({
+      uri: asset.uri,
+      name: asset.fileName ?? 'profile.jpg',
+      type: asset.mimeType ?? 'image/jpeg',
+      size: asset.fileSize,
+    });
+  };
+
+  const onSubmit = handleSubmit(async (values) => {
+    const nextProfile = {
       keyword: values.keyword,
       name: values.name.trim(),
       heightCm: Number(values.heightCm),
       weightKg: Number(values.weightKg),
       bio: values.bio,
-    });
-    savingRef.current = true;
-    router.back();
+    };
+
+    try {
+      await updateMyProfile({
+        nickname: nextProfile.name,
+        styleKeyword: nextProfile.keyword,
+        height: nextProfile.heightCm,
+        weight: nextProfile.weightKg,
+        bio: nextProfile.bio,
+        profileImage: profile.avatarUri,
+      });
+      if (selectedImage) {
+        await uploadProfileImage(selectedImage);
+      }
+      profile.setProfile(nextProfile);
+      savingRef.current = true;
+      router.back();
+    } catch (e) {
+      Alert.alert(
+        '저장 실패',
+        e instanceof Error ? e.message : '프로필 저장에 실패했어요.',
+      );
+    }
   });
 
-  const canSave = isValid && isDirty;
+  const canSave = isValid && (isDirty || imageDirty);
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
@@ -116,12 +180,25 @@ export default function ProfileEditScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.avatarSection}>
-            <KeywordAvatar
-              keyword={watchedKeyword ?? profile.keyword}
-              seed={profile.name}
-              size={96}
-            />
-            <Text style={styles.avatarHint}>키워드에 따라 자동 배정돼요</Text>
+            <Pressable
+              onPress={pickProfileImage}
+              accessibilityRole="button"
+              accessibilityLabel="프로필 이미지 변경"
+              style={({ pressed }) => [styles.avatarButton, pressed && styles.avatarButtonPressed]}
+            >
+              {previewUri ? (
+                <Image source={{ uri: previewUri }} style={styles.avatarImage} resizeMode="cover" />
+              ) : (
+                <KeywordAvatar
+                  keyword={watchedKeyword ?? profile.keyword}
+                  seed={profile.name}
+                  size={96}
+                />
+              )}
+            </Pressable>
+            <Pressable onPress={pickProfileImage} hitSlop={10}>
+              <Text style={styles.avatarActionText}>사진 변경</Text>
+            </Pressable>
           </View>
 
           <Section title="프로필 정보">
@@ -367,10 +444,24 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.lg,
     gap: Spacing.sm,
   },
-  avatarHint: {
-    fontFamily: FontFamily.regular,
+  avatarButton: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    overflow: 'hidden',
+    backgroundColor: Palette.gray50,
+  },
+  avatarButtonPressed: {
+    opacity: 0.8,
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarActionText: {
+    fontFamily: FontFamily.semibold,
     fontSize: 12,
-    color: Palette.gray400,
+    color: Palette.pink500,
   },
   section: {
     paddingHorizontal: Spacing.base,

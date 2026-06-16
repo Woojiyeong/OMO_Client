@@ -13,9 +13,10 @@ export type LoginForm = z.infer<typeof loginSchema>;
 export const accountIdSchema = z.object({
   username: z
     .string()
-    .min(3, '3자 이상 입력해주세요.')
+    .min(4, '4자 이상 입력해주세요.')
     .max(20, '20자 이하로 입력해주세요.')
     .regex(/^[a-zA-Z0-9_]+$/, '영문/숫자/_ 만 사용 가능해요.'),
+  currentPassword: z.string().min(1, '현재 비밀번호를 입력해 주세요.'),
 });
 
 export type AccountIdForm = z.infer<typeof accountIdSchema>;
@@ -25,8 +26,12 @@ export const accountPasswordSchema = z
     currentPassword: z.string().min(1, '현재 비밀번호를 입력해 주세요.'),
     newPassword: z
       .string()
-      .min(8, '특수문자를 포함해 8자리 이상 입력해주세요.')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, '특수문자를 포함해 8자리 이상 입력해주세요.'),
+      .min(8, '대소문자/숫자/특수문자를 포함해 8자리 이상 입력해주세요.')
+      .max(64, '64자 이하로 입력해주세요.')
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/,
+        '대소문자/숫자/특수문자를 포함해 8자리 이상 입력해주세요.',
+      ),
     confirm: z.string(),
   })
   .refine((d) => d.newPassword === d.confirm, {

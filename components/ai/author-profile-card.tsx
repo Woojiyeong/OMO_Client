@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from '@/components/profile/avatar';
 import { FollowButton } from '@/components/social/follow-button';
 import { KeywordAvatar } from '@/components/profile/keyword-avatar';
 import { Palette } from '@/constants/colors';
@@ -39,7 +40,11 @@ export function AuthorProfileCard({ author }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.left}>
-        <KeywordAvatar keyword={author.keyword} seed={author.id} size={AVATAR_SIZE} />
+        {author.avatarUri ? (
+          <Avatar uri={author.avatarUri} size={AVATAR_SIZE} />
+        ) : (
+          <KeywordAvatar keyword={author.keyword} seed={author.id} size={AVATAR_SIZE} />
+        )}
         <Text style={styles.nickname} numberOfLines={1}>
           {author.nickname}
         </Text>
