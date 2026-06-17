@@ -14,50 +14,23 @@ import { Palette } from "@/constants/colors";
 
 const DEFAULT_SIZE = 96;
 const STROKE = Palette.pink500;
-const STROKE_WIDTH = 2;
-
-const HOOK_CX = 24;
-const HOOK_CY = 14;
-const HOOK_R = 3.5;
-const APEX_X = 24;
-const APEX_Y = 24;
-const LEFT_X = 8;
-const RIGHT_X = 40;
-const BOTTOM_Y = 40;
-const CORNER_R = 3;
-
-const SLANT_LEN = Math.hypot(LEFT_X - APEX_X, BOTTOM_Y - APEX_Y);
-const SLANT_UX = (LEFT_X - APEX_X) / SLANT_LEN;
-const SLANT_UY = (BOTTOM_Y - APEX_Y) / SLANT_LEN;
-
-const APEX_OUT_L_X = APEX_X + SLANT_UX * CORNER_R;
-const APEX_OUT_L_Y = APEX_Y + SLANT_UY * CORNER_R;
-const APEX_IN_R_X = APEX_X - SLANT_UX * CORNER_R;
-const APEX_IN_R_Y = APEX_Y + SLANT_UY * CORNER_R;
-const BL_IN_X = LEFT_X - SLANT_UX * CORNER_R;
-const BL_IN_Y = BOTTOM_Y - SLANT_UY * CORNER_R;
-const BL_OUT_X = LEFT_X + CORNER_R;
-const BR_IN_X = RIGHT_X - CORNER_R;
-const BR_OUT_X = RIGHT_X + SLANT_UX * CORNER_R;
-const BR_OUT_Y = BOTTOM_Y - SLANT_UY * CORNER_R;
-
-const f = (n: number) => n.toFixed(2);
+const STROKE_WIDTH = 2.8;
 
 const HANGER_PATH =
-  `M ${HOOK_CX - HOOK_R} ${HOOK_CY} ` +
-  `Q ${HOOK_CX - HOOK_R} ${HOOK_CY - HOOK_R} ${HOOK_CX} ${HOOK_CY - HOOK_R} ` +
-  `Q ${HOOK_CX + HOOK_R} ${HOOK_CY - HOOK_R} ${HOOK_CX + HOOK_R} ${HOOK_CY} ` +
-  `Q ${HOOK_CX + HOOK_R} ${HOOK_CY + HOOK_R} ${HOOK_CX} ${HOOK_CY + HOOK_R} ` +
-  `L ${APEX_X} ${APEX_Y - CORNER_R} ` +
-  `Q ${APEX_X} ${APEX_Y} ${f(APEX_OUT_L_X)} ${f(APEX_OUT_L_Y)} ` +
-  `L ${f(BL_IN_X)} ${f(BL_IN_Y)} ` +
-  `Q ${LEFT_X} ${BOTTOM_Y} ${BL_OUT_X} ${BOTTOM_Y} ` +
-  `L ${BR_IN_X} ${BOTTOM_Y} ` +
-  `Q ${RIGHT_X} ${BOTTOM_Y} ${f(BR_OUT_X)} ${f(BR_OUT_Y)} ` +
-  `L ${f(APEX_IN_R_X)} ${f(APEX_IN_R_Y)} ` +
-  `Q ${APEX_X} ${APEX_Y} ${f(APEX_OUT_L_X)} ${f(APEX_OUT_L_Y)}`;
+  "M 20.9 14.2 " +
+  "C 20.9 11.7 23.0 10.0 25.4 10.0 " +
+  "C 28.1 10.0 30.0 11.6 30.0 13.7 " +
+  "C 30.0 15.4 28.8 16.8 27.2 17.8 " +
+  "C 25.3 19.0 24.0 21.0 24.0 23.3 " +
+  "C 24.0 24.2 23.4 24.8 22.4 25.5 " +
+  "L 5.4 37.5 " +
+  "C 4.2 38.4 4.8 40.4 6.5 40.4 " +
+  "L 43.5 40.4 " +
+  "C 45.2 40.4 45.8 38.4 44.6 37.5 " +
+  "L 27.6 25.5 " +
+  "C 26.6 24.8 25.4 24.2 24.0 23.3";
 
-const PATH_LENGTH = 100;
+const PATH_LENGTH = 150;
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 

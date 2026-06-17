@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   md: {
-    height: 52,
+    height: 54,
     paddingHorizontal: Spacing.lg,
   },
   sm: {
-    height: 40,
+    height: 54,
     paddingHorizontal: Spacing.md,
   },
   primary: {

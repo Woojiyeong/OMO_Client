@@ -17,12 +17,12 @@ type Variant =
   | 'label';
 
 export const Typography: Record<Variant, TextStyle> = {
-  display: { fontFamily: FontFamily.bold, fontSize: 28, lineHeight: 36 },
-  title: { fontFamily: FontFamily.bold, fontSize: 22, lineHeight: 30 },
-  subtitle: { fontFamily: FontFamily.semibold, fontSize: 18, lineHeight: 26 },
-  body: { fontFamily: FontFamily.regular, fontSize: 16, lineHeight: 24 },
-  bodyBold: { fontFamily: FontFamily.semibold, fontSize: 16, lineHeight: 24 },
-  button: { fontFamily: FontFamily.semibold, fontSize: 16, lineHeight: 20 },
-  caption: { fontFamily: FontFamily.regular, fontSize: 13, lineHeight: 18 },
-  label: { fontFamily: FontFamily.semibold, fontSize: 14, lineHeight: 20 },
+  display: { fontFamily: FontFamily.bold, fontSize: 31, lineHeight: 40 },
+  title: { fontFamily: FontFamily.bold, fontSize: 24, lineHeight: 32 },
+  subtitle: { fontFamily: FontFamily.semibold, fontSize: 20, lineHeight: 28 },
+  body: { fontFamily: FontFamily.regular, fontSize: 17, lineHeight: 26 },
+  bodyBold: { fontFamily: FontFamily.semibold, fontSize: 17, lineHeight: 26 },
+  button: { fontFamily: FontFamily.semibold, fontSize: 17, lineHeight: 22 },
+  caption: { fontFamily: FontFamily.regular, fontSize: 14, lineHeight: 20 },
+  label: { fontFamily: FontFamily.semibold, fontSize: 15, lineHeight: 22 },
 };

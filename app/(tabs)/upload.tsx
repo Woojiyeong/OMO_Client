@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   cta: {
     marginTop: 28,
     width: '100%',
-    height: 48,
+    height: 54,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   publish: {
     marginTop: 16,
     width: '100%',
-    height: 48,
+    height: 54,
     borderRadius: 12,
     backgroundColor: '#ff007f',
     alignItems: 'center',

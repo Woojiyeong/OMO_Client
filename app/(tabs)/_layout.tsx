@@ -1,9 +1,14 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { AiIcon, FeedIcon, MyIcon, UploadIcon } from '@/components/ui/tab-icons';
-import { Palette } from '@/constants/colors';
+import { HapticTab } from "@/components/haptic-tab";
+import {
+  AiIcon,
+  FeedIcon,
+  MyIcon,
+  UploadIcon,
+} from "@/components/ui/tab-icons";
+import { Palette } from "@/constants/colors";
 
 export default function TabLayout() {
   return (
@@ -13,36 +18,42 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Palette.grayBorder,
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarStyle: {
+          height: 90,
+          paddingTop: 4,
+          paddingBottom: 6,
+        },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontFamily: 'Pretendard-Medium',
+          fontFamily: "Pretendard-Medium",
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: '피드',
+          title: "피드",
           tabBarIcon: ({ color }) => <FeedIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="ai"
         options={{
-          title: 'AI',
+          title: "AI",
           tabBarIcon: ({ color }) => <AiIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="upload"
         options={{
-          title: '업로드',
+          title: "업로드",
           tabBarIcon: ({ color }) => <UploadIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="my"
         options={{
-          title: '마이',
+          title: "마이",
           tabBarIcon: ({ color }) => <MyIcon color={color} />,
         }}
       />

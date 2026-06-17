@@ -45,6 +45,7 @@ export default function FollowListScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [unfollowTarget, setUnfollowTarget] = useState<SocialUser | null>(null);
+  const [followOverrides, setFollowOverrides] = useState<Record<string, boolean>>({});
 
   const list = isRemoteUser
     ? remoteList
@@ -56,7 +57,20 @@ export default function FollowListScreen() {
     : listType === 'following'
       ? loadingFollowing
       : loadingFollowers;
+  const getUserFollowing = useCallback(
+    (user: SocialUser) => {
+      const override = followOverrides[user.id];
+      if (override !== undefined) return override;
+      return (
+        isFollowing(user.id) ||
+        user.isFollowing === true ||
+        (!isRemoteUser && listType === 'following')
+      );
+    },
+    [followOverrides, isFollowing, isRemoteUser, listType],
+  );
   const reload = useCallback(async () => {
+    setFollowOverrides({});
     if (!isRemoteUser) {
       const loadMine = listType === 'following' ? loadFollowing : loadFollowers;
       await loadMine(true);
@@ -128,20 +142,26 @@ export default function FollowListScreen() {
 
   const handleToggleFollow = useCallback(
     (user: SocialUser) => {
-      if (isFollowing(user.id)) {
+      if (getUserFollowing(user)) {
         setUnfollowTarget(user);
       } else {
-        followAction(user).catch(() => {});
+        setFollowOverrides((prev) => ({ ...prev, [user.id]: true }));
+        followAction({ ...user, isFollowing: true }).catch(() => {
+          setFollowOverrides((prev) => ({ ...prev, [user.id]: false }));
+        });
       }
     },
-    [followAction, isFollowing],
+    [followAction, getUserFollowing],
   );
 
   const handleConfirmUnfollow = useCallback(() => {
     if (!unfollowTarget) return;
     const id = unfollowTarget.id;
     setUnfollowTarget(null);
-    unfollowAction(id).catch(() => {});
+    setFollowOverrides((prev) => ({ ...prev, [id]: false }));
+    unfollowAction(id).catch(() => {
+      setFollowOverrides((prev) => ({ ...prev, [id]: true }));
+    });
   }, [unfollowTarget, unfollowAction]);
 
   const handlePressUser = useCallback((user: SocialUser) => {
@@ -188,7 +208,7 @@ export default function FollowListScreen() {
           renderItem={({ item }) => (
             <UserListItem
               user={item}
-              following={isFollowing(item.id)}
+              following={getUserFollowing(item)}
               pending={!!pendingFollowOps[item.id]}
               onPressUser={() => handlePressUser(item)}
               onPressFollow={() => handleToggleFollow(item)}

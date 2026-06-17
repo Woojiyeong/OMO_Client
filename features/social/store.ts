@@ -29,14 +29,20 @@ type SocialState = {
   isFollowing: (userId: string) => boolean;
 };
 
-function syncProfileCounts(following: SocialUser[], followers: SocialUser[]) {
+function setProfileCountPatch(stats: Partial<{ following: number; followers: number }>) {
   const profile = useProfileStore.getState();
   profile.setProfile({
     stats: {
       ...profile.stats,
-      following: following.length,
-      followers: followers.length,
+      ...stats,
     },
+  });
+}
+
+function adjustFollowingCount(delta: number) {
+  const profile = useProfileStore.getState();
+  setProfileCountPatch({
+    following: Math.max(0, profile.stats.following + delta),
   });
 }
 
@@ -74,7 +80,9 @@ export const useSocialStore = create<SocialState>((set, get) => ({
         followingCursor: page.nextCursor,
         followingHasNext: page.hasNext,
       });
-      syncProfileCounts(merged, get().followers);
+      if (!page.hasNext) {
+        setProfileCountPatch({ following: merged.length });
+      }
     } finally {
       set({ loadingFollowing: false });
     }
@@ -99,7 +107,9 @@ export const useSocialStore = create<SocialState>((set, get) => ({
         followersCursor: page.nextCursor,
         followersHasNext: page.hasNext,
       });
-      syncProfileCounts(get().following, merged);
+      if (!page.hasNext) {
+        setProfileCountPatch({ followers: merged.length });
+      }
     } finally {
       set({ loadingFollowers: false });
     }
@@ -126,7 +136,9 @@ export const useSocialStore = create<SocialState>((set, get) => ({
           ...s.following,
           ...page.users.filter((user) => !seen.has(user.id)),
         ];
-        syncProfileCounts(following, s.followers);
+        if (!page.hasNext) {
+          setProfileCountPatch({ following: following.length });
+        }
         return {
           following,
           followingCursor: page.nextCursor,
@@ -159,7 +171,9 @@ export const useSocialStore = create<SocialState>((set, get) => ({
           ...s.followers,
           ...page.users.filter((user) => !seen.has(user.id)),
         ];
-        syncProfileCounts(s.following, followers);
+        if (!page.hasNext) {
+          setProfileCountPatch({ followers: followers.length });
+        }
         return {
           followers,
           followersCursor: page.nextCursor,
@@ -179,13 +193,13 @@ export const useSocialStore = create<SocialState>((set, get) => ({
       pendingFollowOps: { ...s.pendingFollowOps, [user.id]: true },
       following: [user, ...s.following],
     }));
-    syncProfileCounts(get().following, get().followers);
+    adjustFollowingCount(1);
 
     try {
       await api.follow(user.id);
     } catch (e) {
       set((s) => ({ following: s.following.filter((u) => u.id !== user.id) }));
-      syncProfileCounts(get().following, get().followers);
+      adjustFollowingCount(-1);
       throw e;
     } finally {
       set((s) => {
@@ -200,20 +214,18 @@ export const useSocialStore = create<SocialState>((set, get) => ({
     if (get().pendingFollowOps[userId]) return;
 
     const prev = get().following;
-    const removed = prev.find((u) => u.id === userId);
-    if (!removed) return;
 
     set((s) => ({
       pendingFollowOps: { ...s.pendingFollowOps, [userId]: true },
       following: s.following.filter((u) => u.id !== userId),
     }));
-    syncProfileCounts(get().following, get().followers);
+    adjustFollowingCount(-1);
 
     try {
       await api.unfollow(userId);
     } catch (e) {
       set({ following: prev });
-      syncProfileCounts(prev, get().followers);
+      adjustFollowingCount(1);
       throw e;
     } finally {
       set((s) => {

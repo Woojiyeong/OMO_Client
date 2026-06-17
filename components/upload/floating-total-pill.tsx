@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { FontFamily } from '@/constants/typography';
 
@@ -7,12 +13,25 @@ type Props = {
 };
 
 export function FloatingTotalPill({ totalWon }: Props) {
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(18);
+
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 220 });
+    translateY.value = withTiming(0, { duration: 260 });
+  }, [opacity, translateY]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
   return (
     <View style={styles.container} pointerEvents="box-none">
-      <View style={styles.pill}>
+      <Animated.View style={[styles.pill, animatedStyle]}>
         <Text style={styles.label}>예상 금액</Text>
         <Text style={styles.amount}>{totalWon.toLocaleString('ko-KR')}원</Text>
-      </View>
+      </Animated.View>
     </View>
   );
 }

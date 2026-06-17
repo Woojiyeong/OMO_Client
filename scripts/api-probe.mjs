@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const API_BASE_URL =
-  process.env.OMO_API_BASE_URL ?? 'https://omo.mirim-it-show.site/api/v1';
+  process.env.OMO_API_BASE_URL ?? 'https://omo.hjun.kr/api/v1';
 const OUT_DIR = process.env.OMO_PROBE_OUT_DIR ?? 'reports/api-probe';
 const LOGIN_ID = process.env.OMO_LOGIN_ID;
 const PASSWORD = process.env.OMO_PASSWORD;
@@ -192,7 +192,7 @@ async function runSafeAuthProbes() {
   const profile = await request('auth.profile.get', '/auth/profile', { auth: true });
   rememberUser(profile.body);
 
-  await request('ai.chat.session', '/ai/chat/session', {
+  await request('ai.chat.session', '/ai-service/chat/session', {
     method: 'POST',
     auth: true,
   }).then((result) => {
@@ -201,7 +201,7 @@ async function runSafeAuthProbes() {
     }
   });
 
-  await request('ai.chat', '/ai/chat', {
+  await request('ai.chat', '/ai-service/chat', {
     method: 'POST',
     auth: true,
     body: safeJson({
@@ -250,7 +250,7 @@ async function runImageProbes() {
 
   const searchForm = new FormData();
   await appendFileForm(searchForm, 'image', IMAGE_PATH);
-  await request('ai.search', '/ai/search', {
+  await request('ai.search', '/ai-service/search', {
     method: 'POST',
     auth: true,
     body: searchForm,

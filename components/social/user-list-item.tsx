@@ -32,9 +32,9 @@ export function UserListItem({
       accessibilityLabel={`${formatNickname(user.keyword, user.name)} 프로필 보기`}
     >
       {user.avatarUri ? (
-        <Avatar uri={user.avatarUri} size={48} />
+        <Avatar uri={user.avatarUri} size={54} />
       ) : (
-        <KeywordAvatar keyword={user.keyword} seed={user.id} size={48} />
+        <KeywordAvatar keyword={user.keyword} seed={user.id} size={54} />
       )}
       <View style={styles.text}>
         <Text style={styles.name} numberOfLines={1}>
@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: FontFamily.bold,
-    fontSize: 15,
+    fontSize: 16,
     color: Palette.textPrimary,
   },
   bio: {
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.grayBorder,
   },
 });

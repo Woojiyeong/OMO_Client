@@ -1,6 +1,7 @@
 import type { ImageSourcePropType } from 'react-native';
 
 import { apiFetch, resolveApiAssetUrl } from '@/features/api/client';
+import { getProductCategoryLabel } from '@/features/products/categories';
 
 type ApiProductImage = {
   id?: string;
@@ -18,6 +19,8 @@ type ApiProduct = {
   price?: number | null;
   priceWon?: number | null;
   thumbnailUrl?: string | null;
+  productUrl?: string | null;
+  purchaseUrl?: string | null;
   images?: ApiProductImage[];
 };
 
@@ -29,6 +32,7 @@ export type ProductDetail = {
   priceWon: number;
   thumbnail?: ImageSourcePropType;
   images: ImageSourcePropType[];
+  productUrl?: string;
 };
 
 function imageSource(uri?: string | null): ImageSourcePropType | undefined {
@@ -49,10 +53,11 @@ function mapProduct(product: ApiProduct): ProductDetail {
     id: product.id,
     name: product.name,
     brand: product.brandName ?? product.brand ?? '',
-    category: product.category ?? '',
+    category: getProductCategoryLabel(product.category),
     priceWon: product.priceWon ?? product.price ?? 0,
     thumbnail,
     images,
+    productUrl: product.productUrl ?? product.purchaseUrl ?? undefined,
   };
 }
 

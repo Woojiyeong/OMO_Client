@@ -33,6 +33,9 @@ yarn-error.*
 # local env files
 .env*.local
 
+# api probe reports
+reports/api-probe/
+
 # typescript
 *.tsbuildinfo
 

@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 56,
+    height: 60,
     borderWidth: 1,
     borderColor: Palette.gray150,
     borderRadius: Radius.lg,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontFamily: FontFamily.regular,
-    fontSize: 16,
+    fontSize: 17,
     color: Palette.black,
     paddingVertical: 0,
     margin: 0,

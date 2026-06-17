@@ -72,6 +72,7 @@ function mapUser(user: ApiUser): SocialUser {
     keyword: toAppStyleKeyword(user.styleKeyword ?? user.keyword),
     bio: user.bio ?? '',
     avatarUri: resolveApiAssetUrl(user.profileImage ?? user.avatarUri),
+    isFollowing: user.isFollowing,
   };
 }
 
@@ -92,7 +93,14 @@ export async function fetchFollowingPageForUser({
     `/users/${encodeURIComponent(userId)}/followings?${params.toString()}`,
   );
   const meta = pageMeta(response);
-  return { users: listItems(response).map(mapUser), ...meta };
+  return {
+    users: listItems(response).map((user) => ({
+      ...mapUser(user),
+      isFollowing:
+        userId === currentUserId() ? true : (user.isFollowing ?? undefined),
+    })),
+    ...meta,
+  };
 }
 
 export async function fetchFollowersPageForUser({

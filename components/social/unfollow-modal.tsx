@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    height: 52,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
   },

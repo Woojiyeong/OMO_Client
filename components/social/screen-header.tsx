@@ -30,7 +30,7 @@ export function ScreenHeader({ title, onBack }: Props) {
 
 function ChevronLeft() {
   return (
-    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+    <Svg width={26} height={26} viewBox="0 0 24 24" fill="none">
       <Path
         d="M15 18L9 12L15 6"
         stroke={Palette.textPrimary}
@@ -44,7 +44,7 @@ function ChevronLeft() {
 
 const styles = StyleSheet.create({
   row: {
-    height: 56,
+    height: 62,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.white,
   },
   side: {
-    minWidth: 48,
-    height: 44,
+    minWidth: 52,
+    height: 48,
     justifyContent: 'center',
   },
   title: {
     fontFamily: FontFamily.bold,
-    fontSize: 16,
+    fontSize: 18,
     color: Palette.textPrimary,
   },
 });

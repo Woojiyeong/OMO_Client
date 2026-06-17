@@ -6,6 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { FontFamily } from '@/constants/typography';
+import { getProductCategoryLabel } from '@/features/products/categories';
 import type { UploadProduct } from '@/features/upload/types';
 
 type Props = {
@@ -18,6 +19,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function PinProductCard({ product, onPress }: Props) {
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const category = getProductCategoryLabel(product.category);
 
   return (
     <AnimatedPressable
@@ -29,7 +31,7 @@ export function PinProductCard({ product, onPress }: Props) {
         scale.value = withTiming(1, { duration: 120 });
       }}
       accessibilityRole="button"
-      accessibilityLabel={`${product.category} ${product.name} 수정`}
+      accessibilityLabel={`${category} ${product.name} 수정`}
       style={[styles.card, animatedStyle]}
     >
       <View style={styles.thumb}>
@@ -39,7 +41,7 @@ export function PinProductCard({ product, onPress }: Props) {
       </View>
       <View style={styles.info}>
         <Text style={styles.category} numberOfLines={1}>
-          {product.category}
+          {category}
         </Text>
         <Text style={styles.name} numberOfLines={2}>
           {product.name}

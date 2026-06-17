@@ -1,5 +1,6 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -51,7 +52,7 @@ export function ProductPin({ x, y, containerWidth, containerHeight, onPress }: P
       accessibilityLabel="상품 핀"
       style={[styles.pin, { left, top }, animatedStyle]}
     >
-      <View style={styles.dot} />
+      <MaterialIcons name="push-pin" size={20} color={Palette.pink500} />
     </AnimatedPressable>
   );
 }
@@ -70,11 +71,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: Palette.pink500,
   },
 });

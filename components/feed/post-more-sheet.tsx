@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   action: {
-    height: 56,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: Spacing.base,

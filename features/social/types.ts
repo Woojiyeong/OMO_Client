@@ -6,6 +6,7 @@ export type SocialUser = {
   keyword: StyleOption;
   bio: string;
   avatarUri?: string;
+  isFollowing?: boolean;
 };
 
 export type FollowListType = 'following' | 'followers';

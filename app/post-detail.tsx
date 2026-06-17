@@ -10,8 +10,11 @@ import { Palette } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import {
   deletePost,
+  fetchMyBookmarksPage,
+  fetchMyPostsPage,
   fetchPost,
   fetchPostsPage,
+  fetchUserPostsPage,
   removeMyBookmark,
 } from '@/features/feed/api';
 import { MOCK_MY_POSTS } from '@/features/feed/mock';
@@ -34,10 +37,32 @@ const SOURCE_VARIANT: Record<Source, PostMoreVariant> = {
   trend: 'report',
 };
 
+function mergePosts(...groups: FeedPost[][]): FeedPost[] {
+  const seen = new Set<string>();
+  return groups.flatMap((group) =>
+    group.filter((post) => {
+      if (seen.has(post.id)) return false;
+      seen.add(post.id);
+      return true;
+    }),
+  );
+}
+
+function postsWithFocusedPost(focusedPost: FeedPost | null, posts: FeedPost[]): FeedPost[] {
+  if (!focusedPost) return posts;
+  const existingIndex = posts.findIndex((post) => post.id === focusedPost.id);
+  if (existingIndex < 0) return [focusedPost, ...posts];
+
+  const nextPosts = [...posts];
+  nextPosts[existingIndex] = focusedPost;
+  return nextPosts;
+}
+
 export default function PostDetailScreen() {
-  const { id, source: rawSource } = useLocalSearchParams<{
+  const { id, source: rawSource, userId } = useLocalSearchParams<{
     id?: string;
     source?: string;
+    userId?: string;
     name?: string;
   }>();
   const source: Source =
@@ -46,18 +71,23 @@ export default function PostDetailScreen() {
       : 'trend';
 
   const uploaded = useMyPostsStore((s) => s.uploaded);
+  const deletedPostIds = useMyPostsStore((s) => s.deletedIds);
+  const markPostDeleted = useMyPostsStore((s) => s.markPostDeleted);
+  const restorePostDeleted = useMyPostsStore((s) => s.restorePostDeleted);
+  const markBookmarkRemoved = useMyPostsStore((s) => s.markBookmarkRemoved);
+  const restoreBookmarkRemoved = useMyPostsStore((s) => s.restoreBookmarkRemoved);
   const [remotePosts, setRemotePosts] = useState<FeedPost[]>([]);
-  const [trendNextCursor, setTrendNextCursor] = useState<string | null>(null);
-  const [loadingMoreTrend, setLoadingMoreTrend] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMorePosts, setLoadingMorePosts] = useState(false);
 
   const basePosts = useMemo<FeedPost[]>(() => {
-    if (source === 'my') return [...uploaded, ...MOCK_MY_POSTS];
+    if (source === 'my') return mergePosts(uploaded, remotePosts, MOCK_MY_POSTS);
     return remotePosts;
   }, [source, uploaded, remotePosts]);
   const [removedIds, setRemovedIds] = useState<Set<string>>(() => new Set());
   const posts = useMemo(
-    () => basePosts.filter((p) => !removedIds.has(p.id)),
-    [basePosts, removedIds],
+    () => basePosts.filter((p) => !removedIds.has(p.id) && !deletedPostIds.includes(p.id)),
+    [basePosts, deletedPostIds, removedIds],
   );
 
   const initialIndex = useMemo(() => {
@@ -80,8 +110,10 @@ export default function PostDetailScreen() {
   }, [initialIndex]);
 
   useEffect(() => {
-    if (!id || source === 'my') return;
+    if (!id) return;
     let cancelled = false;
+    setRemotePosts([]);
+    setNextCursor(null);
 
     if (source === 'trend') {
       Promise.all([
@@ -90,9 +122,49 @@ export default function PostDetailScreen() {
       ])
         .then(([focusedPost, page]) => {
           if (cancelled) return;
-          const hasFocusedPost = page.posts.some((post) => post.id === focusedPost.id);
-          setRemotePosts(hasFocusedPost ? page.posts : [focusedPost, ...page.posts]);
-          setTrendNextCursor(page.nextCursor);
+          setRemotePosts(postsWithFocusedPost(focusedPost, page.posts));
+          setNextCursor(page.nextCursor);
+        })
+        .catch(() => {
+          if (!cancelled) router.back();
+        });
+    } else if (source === 'my') {
+      Promise.all([
+        fetchPost(id).catch(() => null),
+        fetchMyPostsPage(),
+      ])
+        .then(([focusedPost, page]) => {
+          if (cancelled) return;
+          setRemotePosts(postsWithFocusedPost(focusedPost, page.posts));
+          setNextCursor(page.nextCursor);
+        })
+        .catch(() => {
+          if (!cancelled) router.back();
+        });
+    } else if (source === 'saved') {
+      Promise.all([
+        fetchPost(id).catch(() => null),
+        fetchMyBookmarksPage(),
+      ])
+        .then(([focusedPost, page]) => {
+          if (cancelled) return;
+          setRemotePosts(postsWithFocusedPost(focusedPost, page.posts));
+          setNextCursor(page.nextCursor);
+        })
+        .catch(() => {
+          if (!cancelled) router.back();
+        });
+    } else if (source === 'user' && userId) {
+      Promise.all([
+        fetchPost(id).catch(() => null),
+        fetchUserPostsPage({ userId }),
+      ])
+        .then(([focusedPost, page]) => {
+          if (cancelled) return;
+          const sameUserFocusedPost =
+            focusedPost && focusedPost.author.id === userId ? focusedPost : null;
+          setRemotePosts(postsWithFocusedPost(sameUserFocusedPost, page.posts));
+          setNextCursor(page.nextCursor);
         })
         .catch(() => {
           if (!cancelled) router.back();
@@ -110,35 +182,49 @@ export default function PostDetailScreen() {
     return () => {
       cancelled = true;
     };
-  }, [id, source]);
+  }, [id, source, userId]);
 
-  const loadMoreTrendPosts = useCallback(async () => {
-    if (source !== 'trend' || !trendNextCursor || loadingMoreTrend) return;
-    setLoadingMoreTrend(true);
-    try {
-      const page = await fetchPostsPage({
-        sort: 'trending',
-        cursor: trendNextCursor,
-      });
-      setRemotePosts((prev) => {
-        const seen = new Set(prev.map((post) => post.id));
-        return [
-          ...prev,
-          ...page.posts.filter((post) => !seen.has(post.id)),
-        ];
-      });
-      setTrendNextCursor(page.nextCursor);
-    } finally {
-      setLoadingMoreTrend(false);
+  const loadMorePosts = useCallback(async () => {
+    if (!nextCursor || loadingMorePosts) return;
+    if (source === 'user' && !userId) return;
+    if (source !== 'trend' && source !== 'my' && source !== 'user' && source !== 'saved') {
+      return;
     }
-  }, [loadingMoreTrend, source, trendNextCursor]);
+
+    setLoadingMorePosts(true);
+    try {
+      const page =
+        source === 'trend'
+          ? await fetchPostsPage({ sort: 'trending', cursor: nextCursor })
+          : source === 'my'
+            ? await fetchMyPostsPage({ cursor: nextCursor })
+            : source === 'saved'
+              ? await fetchMyBookmarksPage({ cursor: nextCursor })
+              : await fetchUserPostsPage({ userId: userId ?? '', cursor: nextCursor });
+
+      setRemotePosts((prev) => mergePosts(prev, page.posts));
+      setNextCursor(page.nextCursor);
+    } finally {
+      setLoadingMorePosts(false);
+    }
+  }, [loadingMorePosts, nextCursor, source, userId]);
 
   const handleRemove = useCallback((post: FeedPost) => {
+    const shouldReturnToMyPage = source === 'my' && posts.length <= 1;
+
     setRemovedIds((prev) => {
       const next = new Set(prev);
       next.add(post.id);
       return next;
     });
+    if (source === 'my') {
+      markPostDeleted(post.id);
+      if (shouldReturnToMyPage) {
+        router.replace('/(tabs)/my');
+      }
+    } else if (source === 'saved') {
+      markBookmarkRemoved(post.id);
+    }
     const request =
       source === 'my'
         ? deletePost(post.id)
@@ -151,8 +237,41 @@ export default function PostDetailScreen() {
         next.delete(post.id);
         return next;
       });
+      if (source === 'my') {
+        restorePostDeleted(post.id);
+      } else if (source === 'saved') {
+        restoreBookmarkRemoved(post.id);
+      }
     });
-  }, [source]);
+  }, [
+    markBookmarkRemoved,
+    markPostDeleted,
+    posts.length,
+    restoreBookmarkRemoved,
+    restorePostDeleted,
+    source,
+  ]);
+
+  const handleBookmarkChange = useCallback(
+    (post: FeedPost, bookmarked: boolean) => {
+      if (source !== 'saved') return;
+      setRemovedIds((prev) => {
+        const next = new Set(prev);
+        if (bookmarked) {
+          next.delete(post.id);
+        } else {
+          next.add(post.id);
+        }
+        return next;
+      });
+      if (bookmarked) {
+        restoreBookmarkRemoved(post.id);
+      } else {
+        markBookmarkRemoved(post.id);
+      }
+    },
+    [markBookmarkRemoved, restoreBookmarkRemoved, source],
+  );
 
   const variant = SOURCE_VARIANT[source];
   const onMoreAction = source === 'trend' ? undefined : handleRemove;
@@ -167,14 +286,17 @@ export default function PostDetailScreen() {
         renderItem={({ item }) => (
           <PostCard
             post={item}
+            initialBookmarked={source === 'saved' ? true : undefined}
+            hideFollowButton={source === 'my'}
             moreVariant={variant}
             onMoreAction={onMoreAction}
+            onBookmarkChange={handleBookmarkChange}
           />
         )}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        onEndReached={source === 'trend' ? loadMoreTrendPosts : undefined}
+        onEndReached={loadMorePosts}
         onEndReachedThreshold={0.7}
         onScrollToIndexFailed={(info) => {
           listRef.current?.scrollToOffset({

@@ -24,9 +24,9 @@ export function ProfileHeader() {
     <View>
       <View style={styles.topRow}>
         {avatarUri ? (
-          <Avatar uri={avatarUri} size={80} />
+          <Avatar uri={avatarUri} size={88} />
         ) : (
-          <KeywordAvatar keyword={keyword} seed={name} size={80} />
+          <KeywordAvatar keyword={keyword} seed={name} size={88} />
         )}
         <ProfileStats
           posts={stats.posts}
@@ -73,23 +73,23 @@ const styles = StyleSheet.create({
   },
   nickname: {
     fontFamily: FontFamily.bold,
-    fontSize: 16,
+    fontSize: 18,
     color: Palette.textPrimary,
   },
   bodyInfo: {
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.gray300,
   },
   bio: {
     marginTop: Spacing.xs,
     fontFamily: FontFamily.regular,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.textPrimary,
   },
   editButton: {
     marginTop: Spacing.md,
-    height: 42,
+    height: 54,
     borderRadius: 8,
     backgroundColor: Palette.gray210,
     alignItems: 'center',
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     fontFamily: FontFamily.semibold,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.white,
   },
 });

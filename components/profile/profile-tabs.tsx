@@ -57,7 +57,7 @@ function TabItem({ active, onPress, Icon, label }: TabItemProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 52,
+    height: 54,
   },
   tab: {
     flex: 1,

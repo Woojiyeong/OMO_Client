@@ -18,7 +18,7 @@ export function TabHeader({ title }: Props) {
 
 const styles = StyleSheet.create({
   header: {
-    height: 56,
+    height: 64,
     paddingHorizontal: Spacing.base,
     justifyContent: 'center',
     borderBottomWidth: 1,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: FontFamily.bold,
-    fontSize: 22,
+    fontSize: 24,
     color: Palette.textPrimary,
   },
 });

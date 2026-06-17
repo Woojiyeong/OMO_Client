@@ -77,13 +77,13 @@ const styles = StyleSheet.create({
   },
   value: {
     fontFamily: FontFamily.bold,
-    fontSize: 16,
+    fontSize: 18,
     color: Palette.textPrimary,
   },
   label: {
     marginTop: 2,
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.gray300,
   },
 });

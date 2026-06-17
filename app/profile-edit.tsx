@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: Spacing.base,
-    height: 52,
+    height: 54,
   },
   settingRowPressed: {
     backgroundColor: Palette.gray50,

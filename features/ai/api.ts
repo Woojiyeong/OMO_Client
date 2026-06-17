@@ -3,6 +3,7 @@ import type { ImageSourcePropType } from "react-native";
 import { apiFetch, resolveApiAssetUrl } from "@/features/api/client";
 import { toAppStyleKeyword } from "@/features/api/style-keyword";
 import { fetchProduct, type ProductDetail } from "@/features/products/api";
+import { getProductCategoryLabel } from "@/features/products/categories";
 
 import type { AiCoordiDetail, AiCoordiItem, AiCoordiSummary } from "./types";
 
@@ -40,8 +41,8 @@ type ApiChatProduct = {
 
 type ApiChatPost = {
   id: string;
-  title: string;
-  description: string;
+  title: string | null;
+  description: string | null;
   viewCount: number;
   likeCount: number;
   bookmarkCount: number;
@@ -85,9 +86,17 @@ function firstImage(post: ApiChatPost) {
 function productName(product: ApiChatProduct) {
   return (
     [product.brand, product.name].filter(Boolean).join(" ") ||
-    product.category ||
+    getProductCategoryLabel(product.category) ||
     "상품"
   );
+}
+
+function postTitle(post: ApiChatPost) {
+  return post.title?.trim() || post.description?.trim() || "추천 코디";
+}
+
+function postDescription(post: ApiChatPost) {
+  return post.description?.trim() || post.title?.trim() || "";
 }
 
 function needsProductDetail(product: ApiChatProduct) {
@@ -146,10 +155,11 @@ function mapItem(
   return {
     id: product.productId ?? product.id,
     detailId: product.productId ?? undefined,
-    category: detail?.category ?? product.category ?? "",
+    category: getProductCategoryLabel(detail?.category ?? product.category),
     name: itemName(product, detail),
     priceWon: detail?.priceWon ?? product.price ?? 0,
     thumbnail: itemThumbnail(product, detail),
+    productUrl: detail?.productUrl ?? product.purchaseUrl ?? undefined,
     pin:
       product.positionX !== null && product.positionY !== null
         ? { x: product.positionX, y: product.positionY }
@@ -165,11 +175,11 @@ function mapDetail(
 
   return {
     id: post.id,
-    images: post.images
+    images: [...post.images]
       .sort((a, b) => a.order - b.order)
       .map((image) => imageSource(image.imageUrl)),
-    title: post.title,
-    description: post.description,
+    title: postTitle(post),
+    description: postDescription(post),
     hashtags: post.hashtags.map((tag) => tag.name),
     totalBudgetWon: items.reduce((sum, item) => sum + item.priceWon, 0),
     likes: post.likeCount,
@@ -197,14 +207,14 @@ function mapSummary(
 
   return {
     id: post.id,
-    name: post.title,
+    name: postTitle(post),
     priceWon: total,
     thumbnail: imageSource(firstImage(post)),
   };
 }
 
 export async function createAiChatSession() {
-  return apiFetch<ApiChatSessionResponse>("/ai/chat/session", {
+  return apiFetch<ApiChatSessionResponse>("/ai-service/chat/session", {
     method: "POST",
   });
 }
@@ -213,7 +223,7 @@ export async function requestAiChatRecommendations(payload: {
   message: string;
   sessionId?: string | null;
 }): Promise<AiChatResult> {
-  const response = await apiFetch<ApiChatResponse>("/ai/chat", {
+  const response = await apiFetch<ApiChatResponse>("/ai-service/chat", {
     method: "POST",
     body: JSON.stringify({
       message: payload.message,

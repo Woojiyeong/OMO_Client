@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.gray220,
   },
   button: {
-    width: 64,
-    height: 34,
-    borderRadius: 17,
+    width: 88,
+    height: 54,
+    borderRadius: 27,
     backgroundColor: Palette.gray220,
   },
 });

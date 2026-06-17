@@ -188,6 +188,7 @@ export default function UserProfileScreen() {
                   <PostGrid
                     posts={posts}
                     source="user"
+                    userId={detail.id}
                     userName={detail.name}
                     onEndReached={loadMorePosts}
                   />

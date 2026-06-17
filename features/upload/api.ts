@@ -1,6 +1,7 @@
 import type { ImageSourcePropType } from 'react-native';
 
 import { apiFetch, resolveApiAssetUrl } from '@/features/api/client';
+import { getProductCategoryLabel } from '@/features/products/categories';
 
 import type { UploadProduct } from './types';
 
@@ -63,38 +64,18 @@ function imageSource(uri?: string | null): ImageSourcePropType {
   return resolved ? { uri: resolved } : require('@/assets/images/icon.png');
 }
 
-function clampPin(value: number) {
-  return Math.max(0, Math.min(1, value));
-}
-
-function normalizePinValue(value: number) {
-  return value > 1 ? value / 100 : value;
-}
-
-function getItemPin(item: AiSearchItem, index: number, total: number) {
-  const rawX = item.positionX ?? item.x;
-  const rawY = item.positionY ?? item.y;
-  if (typeof rawX === 'number' && typeof rawY === 'number') {
-    return {
-      x: clampPin(normalizePinValue(rawX)),
-      y: clampPin(normalizePinValue(rawY)),
-    };
-  }
-
+function getItemPin(_item: AiSearchItem, index: number, total: number) {
   return defaultPin(index, total);
 }
 
 function defaultPin(index: number, total: number) {
   if (total <= 1) return { x: 0.5, y: 0.52 };
 
-  const columns = Math.min(total, 3);
-  const col = index % columns;
-  const row = Math.floor(index / columns);
-  const rows = Math.ceil(total / columns);
+  const isLeft = index % 2 === 0;
 
   return {
-    x: (col + 1) / (columns + 1),
-    y: (row + 1) / (rows + 1),
+    x: isLeft ? 0.28 : 0.72,
+    y: (index + 1) / (total + 1),
   };
 }
 
@@ -123,7 +104,7 @@ function getSearchItems(response: AiSearchResponse) {
 function mapAiItem(item: AiSearchItem, index: number, total: number): UploadProduct {
   const product = firstProduct(item);
   const brand = product?.brandName ?? product?.brand;
-  const category = product?.category ?? item.category ?? '상품';
+  const category = getProductCategoryLabel(product?.category ?? item.category) || '상품';
   const name = [brand, product?.name].filter(Boolean).join(' ') || category;
   const detectedProductId = item.detectedProductId ?? item.id ?? item.uuid;
   const detectedItemId = detectedProductId ?? `ai-item-${index}`;
@@ -161,7 +142,7 @@ export async function searchImageProducts(
     type: image.type ?? 'image/jpeg',
   } as unknown as Blob);
 
-  const response = await apiFetch<AiSearchResponse>('/ai/search', {
+  const response = await apiFetch<AiSearchResponse>('/ai-service/search', {
     method: 'POST',
     body: formData,
   });
@@ -169,7 +150,7 @@ export async function searchImageProducts(
   const items = getSearchItems(response);
   if (__DEV__) {
     console.log(
-      '[upload] ai/search parsed items',
+      '[upload] ai-service/search parsed items',
       JSON.stringify(
         {
           itemCount: items.length,

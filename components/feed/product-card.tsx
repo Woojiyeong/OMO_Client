@@ -1,10 +1,12 @@
 import { router } from 'expo-router';
 import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import GarbIcon from '@/assets/images/garb.svg';
 import { Palette } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
 import type { ProductRecommendation } from '@/features/feed/types';
+import { getProductCategoryLabel } from '@/features/products/categories';
 
 export const PRODUCT_CARD_WIDTH = 280;
 
@@ -18,31 +20,34 @@ export function ProductCard({ product, width = PRODUCT_CARD_WIDTH }: Props) {
   const canOpenDetail = !!product.detailId;
   const canOpenExternal = !!product.productUrl;
   const canPress = canOpenDetail || canOpenExternal;
+  const category = getProductCategoryLabel(product.category);
 
   return (
     <Pressable
       onPress={() => {
-        if (canOpenDetail) {
-          router.push(`/product-detail?id=${encodeURIComponent(detailId)}` as never);
-          return;
-        }
         if (product.productUrl) {
           Linking.openURL(product.productUrl).catch(() => undefined);
+          return;
+        }
+        if (canOpenDetail) {
+          router.push(`/product-detail?id=${encodeURIComponent(detailId)}` as never);
         }
       }}
       accessibilityRole="button"
-      accessibilityLabel={`${product.name} 상품 상세 보기`}
+      accessibilityLabel={`${product.name} 상품 링크 열기`}
       disabled={!canPress}
       style={[styles.card, { width }]}
     >
       <View style={styles.imageBox}>
         {product.thumbnail ? (
           <Image source={product.thumbnail} style={styles.image} resizeMode="cover" />
-        ) : null}
+        ) : (
+          <GarbIcon width={IMAGE_SIZE} height={IMAGE_SIZE} />
+        )}
       </View>
       <View style={styles.info}>
         <Text style={styles.category} numberOfLines={1}>
-          {product.category}
+          {category}
         </Text>
         <Text style={styles.name} numberOfLines={2}>
           {product.name}
@@ -53,7 +58,7 @@ export function ProductCard({ product, width = PRODUCT_CARD_WIDTH }: Props) {
   );
 }
 
-const IMAGE_SIZE = 64;
+const IMAGE_SIZE = 70;
 
 const styles = StyleSheet.create({
   card: {
@@ -70,6 +75,8 @@ const styles = StyleSheet.create({
     height: IMAGE_SIZE,
     borderRadius: Radius.sm,
     backgroundColor: Palette.gray150,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: Spacing.md,
     overflow: 'hidden',
   },
@@ -83,22 +90,22 @@ const styles = StyleSheet.create({
   },
   category: {
     fontFamily: FontFamily.regular,
-    fontSize: 11,
+    fontSize: 12,
     color: Palette.gray500,
     marginBottom: 2,
   },
   name: {
     fontFamily: FontFamily.semibold,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.textPrimary,
-    lineHeight: 18,
+    lineHeight: 20,
   },
   price: {
     position: 'absolute',
     right: Spacing.md,
     bottom: Spacing.md,
     fontFamily: FontFamily.bold,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.textPrimary,
   },
 });

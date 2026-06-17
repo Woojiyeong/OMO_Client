@@ -16,11 +16,12 @@ const GAP = 2;
 type Props = {
   posts: FeedPost[];
   source?: 'my' | 'saved' | 'user';
+  userId?: string;
   userName?: string;
   onEndReached?: () => void;
 };
 
-export function PostGrid({ posts, source, userName, onEndReached }: Props) {
+export function PostGrid({ posts, source, userId, userName, onEndReached }: Props) {
   const { width } = useWindowDimensions();
   const cellSize = Math.floor((width - GAP * (COLUMNS - 1)) / COLUMNS);
 
@@ -33,6 +34,7 @@ export function PostGrid({ posts, source, userName, onEndReached }: Props) {
         const isLastInRow = (index + 1) % COLUMNS === 0;
         const params: Record<string, string> = { id: item.id };
         if (source) params.source = source;
+        if (userId) params.userId = userId;
         if (userName) params.name = userName;
         return (
           <Pressable

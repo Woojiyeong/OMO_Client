@@ -7,6 +7,7 @@ export type FeedAuthor = {
   name: string;
   keyword: StyleOption;
   avatarUri?: string;
+  isFollowing?: boolean;
 };
 
 export type ProductRecommendation = {
@@ -15,7 +16,7 @@ export type ProductRecommendation = {
   category: string;
   name: string;
   priceWon: number;
-  thumbnail: ImageSourcePropType;
+  thumbnail?: ImageSourcePropType;
   productUrl?: string;
 };
 

@@ -1,4 +1,8 @@
 import type { ProductRecommendation } from '@/features/feed/types';
+import {
+  PRODUCT_CATEGORY_OPTIONS,
+  type ProductCategoryOption,
+} from '@/features/products/categories';
 
 export type UploadStatus = 'idle' | 'picked' | 'analyzing' | 'completed';
 
@@ -9,13 +13,6 @@ export type UploadProduct = ProductRecommendation & {
   link?: string;
 };
 
-export const CATEGORY_OPTIONS = [
-  '상의',
-  '하의',
-  '아우터',
-  '신발',
-  '가방',
-  '액세서리',
-] as const;
+export const CATEGORY_OPTIONS = PRODUCT_CATEGORY_OPTIONS;
 
-export type CategoryOption = (typeof CATEGORY_OPTIONS)[number];
+export type CategoryOption = ProductCategoryOption;

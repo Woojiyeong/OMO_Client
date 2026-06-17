@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   submit: {
-    height: 48,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacing.base,

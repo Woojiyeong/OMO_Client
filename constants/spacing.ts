@@ -1,17 +1,17 @@
 export const Spacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  base: 16,
-  lg: 20,
-  xl: 24,
-  xxl: 32,
-  xxxl: 40,
+  xs: 5,
+  sm: 9,
+  md: 14,
+  base: 18,
+  lg: 23,
+  xl: 28,
+  xxl: 36,
+  xxxl: 44,
 } as const;
 
 export const Radius = {
-  sm: 6,
-  md: 10,
-  lg: 16,
+  sm: 7,
+  md: 11,
+  lg: 18,
   pill: 999,
 } as const;

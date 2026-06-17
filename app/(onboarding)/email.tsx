@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     paddingTop: 28,
   },
   verifyButton: {
-    height: 56,
+    height: 54,
     borderRadius: Radius.lg,
   },
 });

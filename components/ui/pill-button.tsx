@@ -59,7 +59,7 @@ export function PillButton({ children, active, onPress, loading, style }: Props)
 
 const styles = StyleSheet.create({
   base: {
-    height: 36,
+    height: 54,
     paddingHorizontal: Spacing.base,
     borderRadius: Radius.pill,
     borderWidth: 1,

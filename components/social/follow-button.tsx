@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   compact: {
-    height: 34,
-    paddingHorizontal: 16,
+    height: 38,
+    paddingHorizontal: 18,
     borderRadius: 9999,
   },
   block: {
-    height: 42,
+    height: 46,
     borderRadius: 8,
     width: '100%',
   },
@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
   },
   textCompact: {
     fontFamily: FontFamily.semibold,
-    fontSize: 13,
+    fontSize: 14,
   },
   textBlock: {
     fontFamily: FontFamily.semibold,
-    fontSize: 14,
+    fontSize: 15,
   },
   textFollowing: {
     color: Palette.textPrimary,

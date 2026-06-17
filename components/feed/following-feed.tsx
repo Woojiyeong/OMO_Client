@@ -72,7 +72,7 @@ export function FollowingFeed() {
     <FlatList
       data={posts}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <PostCard post={item} />}
+      renderItem={({ item }) => <PostCard post={item} initialFollowing />}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       contentContainerStyle={posts.length === 0 ? styles.emptyContent : styles.content}
       showsVerticalScrollIndicator={false}

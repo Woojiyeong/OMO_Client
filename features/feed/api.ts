@@ -1,8 +1,9 @@
 import type { ImageSourcePropType } from 'react-native';
 
-import { apiFetch, resolveApiAssetUrl } from '@/features/api/client';
+import { ApiError, apiFetch, resolveApiAssetUrl } from '@/features/api/client';
 import { toAppStyleKeyword } from '@/features/api/style-keyword';
 import { useAuthStore } from '@/features/auth/store';
+import { getProductCategoryLabel } from '@/features/products/categories';
 
 import type { FeedPost, ProductRecommendation, TrendItem } from './types';
 
@@ -34,10 +35,12 @@ type ApiAuthor = {
   keyword?: string;
   profileImage?: string | null;
   avatarUri?: string;
+  isFollowing?: boolean;
 };
 
 type ApiProduct = {
   id?: string;
+  productId?: string | null;
   detailId?: string;
   canOpenDetail?: boolean;
   category?: string;
@@ -49,7 +52,10 @@ type ApiProduct = {
   thumbnail?: string;
   thumbnailUrl?: string;
   imageUrl?: string;
-  productUrl?: string;
+  image?: string;
+  productImageUrl?: string | null;
+  purchaseUrl?: string | null;
+  productUrl?: string | null;
 };
 
 type ApiImage = {
@@ -67,9 +73,14 @@ type ApiDetectedProduct = {
   id: string;
   name?: string | null;
   brand?: string | null;
+  brandName?: string | null;
   imageUrl?: string | null;
+  thumbnailUrl?: string | null;
+  productImageUrl?: string | null;
   price?: number | null;
+  priceWon?: number | null;
   purchaseUrl?: string | null;
+  productUrl?: string | null;
   category: string | null;
   confidence: number | null;
   positionX: number | null;
@@ -78,6 +89,8 @@ type ApiDetectedProduct = {
   height: number | null;
   productId: string | null;
   isEdited: boolean;
+  product?: ApiProduct | null;
+  matchedProduct?: ApiProduct | null;
 };
 
 export type PostDetectedProduct = ApiDetectedProduct;
@@ -122,6 +135,11 @@ function imageSource(uri?: string): ImageSourcePropType {
   return resolved ? { uri: resolved } : require('@/assets/images/icon.png');
 }
 
+function optionalImageSource(uri?: string | null): ImageSourcePropType | undefined {
+  const resolved = resolveApiAssetUrl(uri);
+  return resolved ? { uri: resolved } : undefined;
+}
+
 function listItems<T>(response: ApiListResponse<T>): T[] {
   if (Array.isArray(response)) return response;
   return (
@@ -140,19 +158,72 @@ function nextCursor<T>(response: ApiListResponse<T>) {
 }
 
 function mapProduct(product: ApiProduct, index: number): ProductRecommendation {
+  const productId = product.productId ?? product.id;
   const detailId =
     product.canOpenDetail === false
       ? undefined
-      : product.detailId ?? product.id;
+      : product.detailId ?? productId ?? undefined;
+  const brand = product.brandName ?? product.brand;
+  const name = [brand, product.name].filter(Boolean).join(' ') || product.name || '';
 
   return {
-    id: product.id ?? `product-${index}`,
+    id: productId ?? `product-${index}`,
     detailId,
-    category: product.category ?? '',
-    name: product.name ?? '',
+    category: getProductCategoryLabel(product.category),
+    name,
     priceWon: product.priceWon ?? product.price ?? 0,
-    thumbnail: imageSource(product.thumbnailUrl ?? product.thumbnail ?? product.imageUrl),
-    productUrl: product.productUrl,
+    thumbnail: optionalImageSource(
+      product.thumbnailUrl ??
+        product.thumbnail ??
+        product.imageUrl ??
+        product.image ??
+        product.productImageUrl,
+    ),
+    productUrl: product.productUrl ?? product.purchaseUrl ?? undefined,
+  };
+}
+
+function mapDetectedProduct(product: ApiDetectedProduct): ApiProduct {
+  const matchedProduct = product.product ?? product.matchedProduct ?? null;
+  const productId =
+    product.productId ?? matchedProduct?.productId ?? matchedProduct?.id ?? null;
+  const brand =
+    matchedProduct?.brandName ??
+    matchedProduct?.brand ??
+    product.brandName ??
+    product.brand;
+  const name =
+    matchedProduct?.name ??
+    product.name ??
+    getProductCategoryLabel(matchedProduct?.category ?? product.category) ??
+    '상품';
+
+  return {
+    id: productId ?? product.id,
+    detailId: productId ?? undefined,
+    canOpenDetail: !!productId,
+    category: matchedProduct?.category ?? product.category ?? '',
+    name: [brand, name].filter(Boolean).join(' ') || '상품',
+    priceWon: matchedProduct?.priceWon ?? product.priceWon ?? undefined,
+    price: matchedProduct?.price ?? product.price ?? 0,
+    thumbnailUrl:
+      matchedProduct?.thumbnailUrl ??
+      matchedProduct?.productImageUrl ??
+      product.thumbnailUrl ??
+      product.productImageUrl ??
+      undefined,
+    thumbnail: matchedProduct?.thumbnail,
+    imageUrl:
+      matchedProduct?.imageUrl ??
+      matchedProduct?.image ??
+      product.imageUrl ??
+      undefined,
+    productUrl:
+      matchedProduct?.productUrl ??
+      matchedProduct?.purchaseUrl ??
+      product.productUrl ??
+      product.purchaseUrl ??
+      undefined,
   };
 }
 
@@ -170,19 +241,7 @@ export function mapPost(post: ApiPost): FeedPost {
   const products =
     post.products ??
     post.items ??
-    post.detectedProducts?.map((product) => ({
-      id: product.productId ?? product.id,
-      detailId: product.productId ?? undefined,
-      canOpenDetail: !!product.productId,
-      category: product.category ?? '',
-      name:
-        [product.brand, product.name].filter(Boolean).join(' ') ||
-        product.category ||
-        '상품',
-      price: product.price ?? 0,
-      imageUrl: product.imageUrl ?? undefined,
-      productUrl: product.purchaseUrl ?? undefined,
-    })) ??
+    post.detectedProducts?.map(mapDetectedProduct) ??
     [];
 
   return {
@@ -192,6 +251,7 @@ export function mapPost(post: ApiPost): FeedPost {
       name: author.nickname ?? author.name ?? '',
       keyword: toAppStyleKeyword(author.styleKeyword ?? author.keyword),
       avatarUri: resolveApiAssetUrl(author.profileImage ?? author.avatarUri),
+      isFollowing: author.isFollowing,
     },
     image: imageSource(imageUrl),
     likes: post.likeCount ?? post.likes ?? 0,
@@ -238,17 +298,27 @@ export async function fetchMyPostsPage({
   cursor?: string;
   limit?: number;
 } = {}): Promise<FeedPage> {
-  const userId = useAuthStore.getState().currentUserId;
-  if (!userId) return { posts: [], nextCursor: null };
-
   const params = new URLSearchParams({ limit: String(limit) });
   if (cursor) params.set('cursor', cursor);
 
-  const response = await apiFetch<ApiListResponse<ApiPost>>(
-    `/users/${encodeURIComponent(userId)}/posts?${params.toString()}`,
-  );
+  let response: ApiListResponse<ApiPost>;
+  try {
+    response = await apiFetch<ApiListResponse<ApiPost>>(
+      `/posts/me?${params.toString()}`,
+    );
+  } catch (error) {
+    const userId = useAuthStore.getState().currentUserId;
+    if (!(error instanceof ApiError) || error.status !== 404 || !userId) {
+      throw error;
+    }
+    response = await apiFetch<ApiListResponse<ApiPost>>(
+      `/users/${encodeURIComponent(userId)}/posts?${params.toString()}`,
+    );
+  }
+
+  const posts = listItems(response);
   return {
-    posts: listItems(response).map(mapPost),
+    posts: posts.map(mapPost),
     nextCursor: nextCursor(response),
   };
 }
@@ -506,9 +576,9 @@ export async function fetchMyBookmarks(params?: {
 
 function mapBookmark(bookmarkOrPost: ApiBookmark | ApiPost): FeedPost {
   if ('post' in bookmarkOrPost && bookmarkOrPost.post) {
-    return mapPost(bookmarkOrPost.post);
+    return { ...mapPost(bookmarkOrPost.post), bookmarked: true };
   }
-  return mapPost(bookmarkOrPost);
+  return { ...mapPost(bookmarkOrPost), bookmarked: true };
 }
 
 export function toTrendItems(posts: FeedPost[]): TrendItem[] {

@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FontFamily } from '@/constants/typography';
+import { toProductCategoryOption } from '@/features/products/categories';
 import { CATEGORY_OPTIONS, type CategoryOption, type UploadProduct } from '@/features/upload/types';
 
 type Props = {
@@ -31,7 +32,7 @@ export function EditProductSheet({ visible, product, onClose, onSubmit }: Props)
 
   useEffect(() => {
     if (visible && product) {
-      setCategory((product.category as CategoryOption) ?? null);
+      setCategory(toProductCategoryOption(product.category));
       setLink(product.link ?? '');
       setDropdownOpen(false);
     }
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   field: {
-    height: 52,
+    height: 54,
     borderWidth: 1,
     borderColor: '#e5e5e5',
     borderRadius: 12,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
   },
   submit: {
     marginTop: 20,
-    height: 56,
+    height: 54,
     borderRadius: 14,
     backgroundColor: '#ff007f',
     alignItems: 'center',

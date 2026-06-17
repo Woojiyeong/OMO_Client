@@ -86,7 +86,7 @@ export default function AiScreen() {
           <View style={[styles.headline, { marginTop: headlineMarginTop }]}>
             {submitting ? (
               <>
-                <HangerAnimation size={72} shapeHeightScale={0.82} />
+                <HangerAnimation size={70} />
                 <Text style={[styles.main, styles.loadingMain]}>
                   딱 어울리는 코디를 만들고 있어요
                 </Text>
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loadingMain: {
-    marginTop: Spacing.xl,
+    marginTop: Spacing.sm,
     fontSize: 16,
     lineHeight: 24,
     color: Palette.pink500,

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,9 +10,12 @@ import { ProfileTab, ProfileTabs } from "@/components/profile/profile-tabs";
 import { TabHeader } from "@/components/ui/tab-header";
 import { Palette } from "@/constants/colors";
 import { Spacing } from "@/constants/spacing";
+import { useAuthStore } from "@/features/auth/store";
 import { fetchMyBookmarksPage, fetchMyPostsPage } from "@/features/feed/api";
 import { useMyPostsStore } from "@/features/feed/store";
 import type { FeedPost } from "@/features/feed/types";
+import { useProfileStore } from "@/features/profile/store";
+import { fetchUserProfile } from "@/features/social/api";
 
 export default function MyScreen() {
   const [tab, setTab] = useState<ProfileTab>("posts");
@@ -21,6 +25,12 @@ export default function MyScreen() {
   const [savedCursor, setSavedCursor] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const uploaded = useMyPostsStore((s) => s.uploaded);
+  const deletedPostIds = useMyPostsStore((s) => s.deletedIds);
+  const bookmarkedPosts = useMyPostsStore((s) => s.bookmarkedPosts);
+  const removedBookmarkIds = useMyPostsStore((s) => s.removedBookmarkIds);
+  const currentUserId = useAuthStore((s) => s.currentUserId);
+  const profileStats = useProfileStore((s) => s.stats);
+  const setProfile = useProfileStore((s) => s.setProfile);
 
   const loadMyPosts = useCallback(async () => {
     const page = await fetchMyPostsPage();
@@ -67,15 +77,57 @@ export default function MyScreen() {
     }
   }, [loadMyPosts, loadSavedPosts, tab]);
 
-  const posts =
-    tab === "posts"
-      ? [
-          ...uploaded,
-          ...myPosts.filter(
-            (post) => !uploaded.some((item) => item.id === post.id),
-          ),
-        ]
-      : savedPosts;
+  useFocusEffect(
+    useCallback(() => {
+      if (!currentUserId) return undefined;
+
+      fetchUserProfile(currentUserId)
+        .then((profile) => {
+          setProfile({ stats: profile.stats });
+        })
+        .catch(() => {});
+
+      return undefined;
+    }, [currentUserId, setProfile]),
+  );
+
+  const myVisiblePosts = useMemo(
+    () =>
+      [
+        ...uploaded,
+        ...myPosts.filter(
+          (post) => !uploaded.some((item) => item.id === post.id),
+        ),
+      ].filter((post) => !deletedPostIds.includes(post.id)),
+    [deletedPostIds, myPosts, uploaded],
+  );
+
+  const savedVisiblePosts = useMemo(
+    () =>
+      [
+        ...bookmarkedPosts,
+        ...savedPosts.filter(
+          (post) => !bookmarkedPosts.some((item) => item.id === post.id),
+        ),
+      ].filter(
+        (post) =>
+          !deletedPostIds.includes(post.id) &&
+          !removedBookmarkIds.includes(post.id),
+      ),
+    [bookmarkedPosts, deletedPostIds, removedBookmarkIds, savedPosts],
+  );
+
+  useEffect(() => {
+    if (profileStats.posts === myVisiblePosts.length) return;
+    setProfile({
+      stats: {
+        ...profileStats,
+        posts: myVisiblePosts.length,
+      },
+    });
+  }, [myVisiblePosts.length, profileStats, setProfile]);
+
+  const posts = tab === "posts" ? myVisiblePosts : savedVisiblePosts;
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>

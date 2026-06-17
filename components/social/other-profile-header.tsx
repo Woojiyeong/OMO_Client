@@ -37,9 +37,9 @@ export function OtherProfileHeader({
     <View>
       <View style={styles.topRow}>
         {user.avatarUri ? (
-          <Avatar uri={user.avatarUri} size={80} />
+          <Avatar uri={user.avatarUri} size={88} />
         ) : (
-          <KeywordAvatar keyword={user.keyword} seed={user.id} size={80} />
+          <KeywordAvatar keyword={user.keyword} seed={user.id} size={88} />
         )}
         <ProfileStats
           posts={user.stats.posts}
@@ -96,18 +96,18 @@ const styles = StyleSheet.create({
   },
   nickname: {
     fontFamily: FontFamily.bold,
-    fontSize: 16,
+    fontSize: 18,
     color: Palette.textPrimary,
   },
   bodyInfo: {
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.gray300,
   },
   bio: {
     marginTop: Spacing.xs,
     fontFamily: FontFamily.regular,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.textPrimary,
   },
   followWrap: {
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   reportButton: {
-    height: 44,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
   },
   reportText: {
     fontFamily: FontFamily.semibold,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.gray500,
   },
 });

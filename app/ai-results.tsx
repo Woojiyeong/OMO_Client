@@ -108,10 +108,12 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     marginTop: Spacing.lg,
+    height: 54,
     paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.sm,
     borderRadius: 999,
     backgroundColor: Palette.pink500,
+    alignItems: "center",
+    justifyContent: "center",
   },
   retryText: {
     fontFamily: FontFamily.semibold,

@@ -23,7 +23,9 @@ import { ReportSheet, type ReportReason } from '@/components/social/report-sheet
 import { Palette } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { FontFamily } from '@/constants/typography';
+import { useAuthStore } from '@/features/auth/store';
 import { reportPost, togglePostBookmark, togglePostLike } from '@/features/feed/api';
+import { useMyPostsStore } from '@/features/feed/store';
 import { STYLE_OPTIONS } from '@/features/onboarding/styles';
 import { useSocialStore } from '@/features/social/store';
 import type { FeedPost } from '@/features/feed/types';
@@ -43,14 +45,28 @@ const STYLE_LABEL = Object.fromEntries(STYLE_OPTIONS.map((opt) => [opt.value, op
 
 type Props = {
   post: FeedPost;
+  initialFollowing?: boolean;
+  initialBookmarked?: boolean;
+  hideFollowButton?: boolean;
   moreVariant?: PostMoreVariant;
   onMoreAction?: (post: FeedPost) => void;
+  onBookmarkChange?: (post: FeedPost, bookmarked: boolean) => void;
 };
 
-export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) {
+export function PostCard({
+  post,
+  initialFollowing = false,
+  initialBookmarked,
+  hideFollowButton = false,
+  moreVariant = 'report',
+  onMoreAction,
+  onBookmarkChange,
+}: Props) {
   const { width } = useWindowDimensions();
   const [liked, setLiked] = useState(post.liked ?? false);
-  const [bookmarked, setBookmarked] = useState(post.bookmarked ?? false);
+  const initialBookmarkState = initialBookmarked ?? post.bookmarked ?? false;
+  const [bookmarked, setBookmarked] = useState(initialBookmarkState);
+  const [followOverride, setFollowOverride] = useState<boolean | null>(null);
   const [moreSheetVisible, setMoreSheetVisible] = useState(false);
   const [productsSheetVisible, setProductsSheetVisible] = useState(false);
   const [reportSheetVisible, setReportSheetVisible] = useState(false);
@@ -58,10 +74,16 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
   const [avatarFailed, setAvatarFailed] = useState(false);
 
   const authorId = post.author.id;
-  const following = useSocialStore((s) => s.following.some((u) => u.id === authorId));
+  const currentUserId = useAuthStore((s) => s.currentUserId);
+  const storeFollowing = useSocialStore((s) => s.following.some((u) => u.id === authorId));
+  const following =
+    followOverride ?? (storeFollowing || initialFollowing || post.author.isFollowing === true);
   const followPending = useSocialStore((s) => !!s.pendingFollowOps[authorId]);
   const followAction = useSocialStore((s) => s.follow);
   const unfollowAction = useSocialStore((s) => s.unfollow);
+  const markBookmarkAdded = useMyPostsStore((s) => s.markBookmarkAdded);
+  const markBookmarkRemoved = useMyPostsStore((s) => s.markBookmarkRemoved);
+  const restoreBookmarkRemoved = useMyPostsStore((s) => s.restoreBookmarkRemoved);
 
   const imageWidth = width - Spacing.base * 2;
   const imageHeight = imageWidth * (5 / 4);
@@ -71,23 +93,30 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
     [post.author.keyword, post.author.name],
   );
 
-  const isSelf = authorId === 'me';
+  const isSelf = authorId === 'me' || (!!currentUserId && authorId === currentUserId);
 
   useEffect(() => {
     setAvatarFailed(false);
-  }, [post.author.avatarUri]);
+    setFollowOverride(null);
+  }, [authorId, post.author.avatarUri, initialFollowing, post.author.isFollowing]);
+
+  useEffect(() => {
+    setBookmarked(initialBookmarkState);
+  }, [initialBookmarkState, post.id]);
 
   const handleToggleFollow = () => {
     if (following) {
-      unfollowAction(post.author.id).catch(() => {});
+      setFollowOverride(false);
+      unfollowAction(post.author.id).catch(() => setFollowOverride(true));
     } else {
+      setFollowOverride(true);
       followAction({
         id: post.author.id,
         name: post.author.name,
         keyword: post.author.keyword,
         avatarUri: post.author.avatarUri,
         bio: '',
-      }).catch(() => {});
+      }).catch(() => setFollowOverride(false));
     }
   };
 
@@ -99,10 +128,31 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
   };
 
   const handleToggleBookmark = () => {
-    setBookmarked((v) => !v);
+    const previous = bookmarked;
+    const optimistic = !previous;
+    const applyBookmarkState = (next: boolean) => {
+      if (next) {
+        markBookmarkAdded(post);
+        restoreBookmarkRemoved(post.id);
+      } else {
+        markBookmarkRemoved(post.id);
+      }
+      onBookmarkChange?.(post, next);
+    };
+
+    setBookmarked(optimistic);
+    applyBookmarkState(optimistic);
     togglePostBookmark(post.id)
-      .then(({ bookmarked: nextBookmarked }) => setBookmarked(nextBookmarked))
-      .catch(() => setBookmarked((v) => !v));
+      .then(({ bookmarked: nextBookmarked }) => {
+        setBookmarked(nextBookmarked);
+        if (nextBookmarked !== optimistic) {
+          applyBookmarkState(nextBookmarked);
+        }
+      })
+      .catch(() => {
+        setBookmarked(previous);
+        applyBookmarkState(previous);
+      });
   };
 
   const handleMoreConfirm = () => {
@@ -164,14 +214,14 @@ export function PostCard({ post, moreVariant = 'report', onMoreAction }: Props) 
                 onError={() => setAvatarFailed(true)}
               />
             ) : (
-              <KeywordAvatar keyword={post.author.keyword} seed={post.author.id} size={36} />
+              <KeywordAvatar keyword={post.author.keyword} seed={post.author.id} size={42} />
             )}
           </View>
           <Text style={styles.handle} numberOfLines={1}>
             {handle}
           </Text>
         </Pressable>
-        {!isSelf ? (
+        {!hideFollowButton && !isSelf ? (
           <View style={styles.followWrap}>
             <FollowButton
               following={following}
@@ -301,7 +351,7 @@ const styles = StyleSheet.create({
   profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 56,
+    height: 64,
     paddingHorizontal: Spacing.base,
   },
   profileTrigger: {
@@ -310,9 +360,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     overflow: 'hidden',
     marginRight: Spacing.md,
   },
@@ -324,15 +374,15 @@ const styles = StyleSheet.create({
   handle: {
     flex: 1,
     fontFamily: FontFamily.semibold,
-    fontSize: 14,
+    fontSize: 15,
     color: Palette.textPrimary,
   },
   followWrap: {
     marginRight: Spacing.sm,
   },
   moreButton: {
-    width: 24,
-    height: 24,
+    width: 30,
+    height: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -345,7 +395,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 44,
+    height: 50,
     paddingHorizontal: Spacing.base,
   },
   likeWrap: {
@@ -355,7 +405,7 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.textPrimary,
   },
   body: {
@@ -363,20 +413,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FontFamily.bold,
-    fontSize: 15,
+    fontSize: 16,
     color: Palette.textPrimary,
     marginBottom: 4,
   },
   description: {
     fontFamily: FontFamily.regular,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
     color: Palette.gray500,
     marginBottom: 8,
   },
   hashtags: {
     fontFamily: FontFamily.regular,
-    fontSize: 13,
+    fontSize: 14,
     color: Palette.pink500,
   },
   singleProductWrap: {
